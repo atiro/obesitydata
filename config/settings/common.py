@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('obesitydata')
@@ -39,11 +40,14 @@ THIRD_PARTY_APPS = (
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
+    'django_nvd3',
+    'djangobower',
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'obesitydata.users',  # custom users app
+    'diagnosis',  # Obesity Diagosis statistics
     # Your stuff: custom apps go here
 )
 
@@ -99,7 +103,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="postgres://localhost/obesitydata"),
+    'default': env.db("DATABASE_URL", default="mysql://USER:PASS@localhost/obesitydata"),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -185,6 +189,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
 )
 
 # MEDIA CONFIGURATION
@@ -257,3 +262,15 @@ LOGGING = {
 }
 
 # Your common stuff: Below this line define 3rd party library settings
+
+
+APPLICATION_DIR = os.path.dirname(globals()['__file__'])
+
+BOWER_COMPONENTS_ROOT = os.path.join(APPLICATION_DIR, 'components')
+
+BOWER_PATH = '/usr/local/bin/bower'
+
+BOWER_INSTALLED_APPS = (
+    'd3#3.3.13',
+    'nvd3#1.7.1',
+)
