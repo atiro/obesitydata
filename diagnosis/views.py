@@ -20,15 +20,22 @@ def annual_england(request, year=None):
             'name2': 'Female',
             'y2': Admissions.objects.filter(gender='F').values_list('admissions', flat=True).order_by('year'),
             'name3': 'Unknown',
-            'y2': Admissions.objects.filter(gender='U').values_list('admissions', flat=True).order_by('year'),
+            'y3': Admissions.objects.filter(gender='U').values_list('admissions', flat=True).order_by('year'),
         }
 
         charttype = 'stackedAreaChart'
+        chartcontainer = 'stackedarea_container'
+
         data = {
             'charttype': charttype,
-            'chartdata': chartdata
+            'chartdata': chartdata,
+            'chartcontainer': chartcontainer,
+            'extra_serie': {
+                'x_is_date': False,
+                'x_axis_format': '.d'
+            }
         }
 
-        return render_to_response('diagnosis/england.html', {'data': data})
+        return render_to_response('diagnosis/england.html', data)
 
 # Create your views here.

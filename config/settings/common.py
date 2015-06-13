@@ -103,7 +103,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="mysql://USER:PASS@localhost/obesitydata"),
+    'default': env.db("DATABASE_URL", default="mysql://obesity:obesity@192.168.1.69/obesitydata"),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -267,8 +267,6 @@ LOGGING = {
 APPLICATION_DIR = os.path.dirname(globals()['__file__'])
 
 BOWER_COMPONENTS_ROOT = os.path.join(APPLICATION_DIR, 'components')
-
-BOWER_PATH = '/usr/local/bin/bower'
 
 BOWER_INSTALLED_APPS = (
     'd3#3.3.13',
