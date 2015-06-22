@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.shortcuts import render_to_response
 
-from diagnosis.models import Admissions, AdmissionsByAge
+from diagnosis.models import Admissions, AdmissionsByAge, SurgeryByGender
 
 
 def annual_england(request, year=None):
@@ -90,4 +90,34 @@ def age_england(request, year=None):
 
         return render_to_response('diagnosis/age-england.html', data)
 
-# Create your views here.
+
+def surgery_gender_england(request, year=None):
+
+    if year is not None:
+        surgery = SurgeryByGender.objects.all().filter(year=year)
+    else:
+        surgery = SurgeryByGender.objects.all()
+
+    chartdata = {
+        'x': ['Male', 'Female', 'Unknown'],
+        'name1': 'Male',
+        'y1': [
+            surgery.filter(gender='M').values_list('admissions', flat=True)[0],
+            surgery.filter(gender='F').values_list('admissions', flat=True)[0],
+            surgery.filter(gender='U').values_list('admissions', flat=True)[0]
+        ]
+    }
+
+    charttype = 'discreteBarChart'
+#    chartcontainer = 'multibarchart_container'
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'extra': {
+            'x_is_date': True,
+            'x_axis_format': '%Y'
+        }
+    }
+
+    return render_to_response('diagnosis/surgery-by-gender.html', data)

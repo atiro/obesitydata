@@ -1,1 +1,8 @@
 {% extends "base.html" %}
+
+{% block content %}
+
+<a href="{% url 'admissions-by-age' %}">Admissions By Age</a>
+<a href="{% url 'surgery-by-gender' %}">Surgery By Gender</a>
+
+{% endblock %}

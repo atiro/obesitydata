@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load nvd3_tags %}
+
+{% block css %}
+{{ block.super  }}
+
+<link media="all" href="{% static 'nvd3/build/nv.d3.css' %}" type="text/css" rel="stylesheet" />
+
+
+{% endblock %}
+
+{% block javascript %}
+
+{{ block.super }}
+
+<script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
+<script type="text/javascript" src='{% static 'nvd3/build/nv.d3.min.js' %}'></script>
+
+{% load_chart charttype chartdata "multibarchart_container" extra %}
+
+{% endblock %}
+
+
+{% block title %}Obesity Admission By Age{% endblock %}
+
+{% block content %}
+
+{% include_container "multibarchart_container" 400 600 %}
+
+Years - {{ chartdata.x }}
+
+{% endblock content %}
+
