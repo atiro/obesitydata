@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',  # registration
     'django_nvd3',
     'djangobower',
+    'django_tables2',
 )
 
 # Apps specific for this project go here.

@@ -33,3 +33,5 @@ django-autoslug==1.8.0
 pytz==2015.4
 
 # Your custom requirements go here
+
+django-tables2
