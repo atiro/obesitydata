@@ -30,9 +30,12 @@
 
 {% block content %}
 
-{% include_container "multibarchart_container" 400 600 %}
-
-{% render_table surgery %}
+<div style="float: left;">
+	{% include_container "multibarchart_container" 400 600 %}
+</div>
+<div style="float: right;">
+	{% render_table surgery_table %}
+</div>
 
 {% endblock content %}
 

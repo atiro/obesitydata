@@ -1,8 +1,12 @@
 from datetime import datetime
 
+from django_tables2 import RequestConfig
+
 from django.shortcuts import render_to_response, render
 
 from diagnosis.models import Admissions, AdmissionsByAge, SurgeryByGender
+
+from diagnosis.tables import SurgeryByGenderTable
 
 
 def annual_england(request, year=None):
@@ -159,11 +163,14 @@ def surgery_gender_england(request, year=None):
 
 #    chartcontainer = 'multibarchart_container'
 
+    table = SurgeryByGenderTable(surgery)
+    RequestConfig(request).configure(table)
+
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
         'extra': extra,
-        'surgery': surgery
+        'surgery_table': table
     }
 
     return render(request, 'diagnosis/surgery-by-gender.html', data)
