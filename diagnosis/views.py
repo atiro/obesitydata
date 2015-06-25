@@ -1,8 +1,10 @@
 from datetime import datetime
-
-from django_tables2 import RequestConfig
+import itertools
 
 from django.shortcuts import render_to_response, render
+from django.db.models import F
+
+from django_tables2 import RequestConfig
 
 from diagnosis.models import Admissions, AdmissionsByAge, SurgeryByGender
 
@@ -163,7 +165,17 @@ def surgery_gender_england(request, year=None):
 
 #    chartcontainer = 'multibarchart_container'
 
-    table = SurgeryByGenderTable(surgery)
+    table_surgery = {}
+    male_surgery = surgery.values('year').annotate(male_admissions=F('admissions')).filter(gender='M')
+    female_surgery = surgery.values('year').annotate(female_admissions=F('admissions')).filter(gender='F')
+    unknown_surgery = surgery.values('year').annotate(unknown_admissions=F('admissions')).filter(gender='U')
+    for sur in itertools.chain(male_surgery, female_surgery, unknown_surgery):
+        if sur['year'] in table_surgery:
+            table_surgery[sur['year']].update(sur)
+        else:
+            table_surgery[sur['year']] = dict(sur)
+
+    table = SurgeryByGenderTable(table_surgery.values())
     RequestConfig(request).configure(table)
 
     data = {
