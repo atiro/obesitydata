@@ -1,14 +1,41 @@
 {% extends "base.html" %}
 
-{% block title %}Annual Admission Episodes{% endblock %}
+{% load static %}
+
+{% load nvd3_tags %}
+
+{% load render_table from django_tables2 %}
+
+{% block css %}
+{{ block.super  }}
+
+<link media="all" href="{% static 'nvd3/build/nv.d3.css' %}" type="text/css" rel="stylesheet" />
+
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+
+{% endblock %}
+
+{% block javascript %}
+
+{{ block.super }}
+
+<script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
+<script type="text/javascript" src='{% static 'nvd3/build/nv.d3.min.js' %}'></script>
+
+{% load_chart charttype chartdata "multibarchart_container" extra %}
+
+{% endblock %}
+
+{% block title %}Admissions By Gender{% endblock %}
 
 {% block content %}
 
-<ul>
-{% for admission in admissions %}
-	<li>{{admission.gender}} - {{admission.admissions}}</li>
-{% endfor %}
-</ul>
-	
+<div style="float: left;">
+	{% include_container "multibarchart_container" 400 600 %}
+</div>
+<div style="float: right;">
+	{% render_table surgery_table %}
+</div>
+
 {% endblock content %}
 

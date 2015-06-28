@@ -14,12 +14,12 @@ class AdmissionsByGenderTable(tables.Table):
     class Meta:
         model = AdmissionsByGender
         attrs = {"class": "paleblue"}
-        exclude = ('id', 'gender', 'admissions')
+        exclude = ('id', 'gender', 'admissions', 'diagnosis')
 
 class AdmissionsByAgeTable(tables.Table):
 
     year = tables.Column(verbose_name="Year")
-    age_under_16 = tables.Column(verbose_name="Under 16")
+    age_under_16 = tables.Column(verbose_name="0-16")
     age_16_to_24 = tables.Column(verbose_name="16-24")
     age_25_to_34 = tables.Column(verbose_name="25-34")
     age_35_to_44 = tables.Column(verbose_name="35-44")
@@ -58,4 +58,4 @@ class SurgeryByGenderTable(tables.Table):
     class Meta:
         model = SurgeryByGender
         attrs = {"class": "paleblue"}
-        exclude = ('id', 'code', 'gender', 'admissions')
+        exclude = ('id', 'code', 'gender', 'admissions', 'diagnosis')

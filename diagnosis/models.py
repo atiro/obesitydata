@@ -12,12 +12,27 @@ GENDER_CHOICES = (
 
 
 class AdmissionsByGender(models.Model):
+    PRIMARY = 'P'
+    SECONDARY = 'S'
+    DIAGNOSIS_CHOICES = (
+        (PRIMARY, 'Primary'),
+        (SECONDARY, 'Secondary')
+    )
+
     year = models.IntegerField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
     admissions = models.IntegerField()
 
+    diagnosis = models.CharField(max_length=1, choices=DIAGNOSIS_CHOICES, default=PRIMARY)
+
 
 class AdmissionsByAge(models.Model):
+    PRIMARY = 'P'
+    SECONDARY = 'S'
+    DIAGNOSIS_CHOICES = (
+        (PRIMARY, 'Primary'),
+        (SECONDARY, 'Secondary')
+    )
 
     year = models.IntegerField()
 
@@ -32,6 +47,8 @@ class AdmissionsByAge(models.Model):
     age_65_to_74 = models.IntegerField()
     age_75_and_over = models.IntegerField()
     age_unknown = models.IntegerField()
+
+    diagnosis = models.CharField(max_length=1, choices=DIAGNOSIS_CHOICES, default=PRIMARY)
 
 
 class SurgeryByGender(models.Model):
