@@ -23,7 +23,7 @@ class Command(BaseCommand):
                     for statsline in statsreader:
                         if statsline[0] == 'M':
                             gender = HealthBMI.MALE
-                        elif statsline[0] == 'F':
+                        elif statsline[0] == 'W':
                             gender = HealthBMI.FEMALE
                         elif statsline[0] == 'A':
                             gender = HealthBMI.ALL
@@ -69,9 +69,13 @@ class Command(BaseCommand):
                             bmi = HealthBMI.BMI_STDERR
                         elif statsline[2] == 'Base':
                             bmi = HealthBMI.BMI_BASE
+                        elif statsline[2] == 'All':
+                            bmi = HealthBMI.BMI_ALL
                         else:
-                            print("PARSE ERROR - Unknown BMI")
+                            print("PARSE ERROR - Unknown BMI: ", statsline[2])
                             exit(1)
+
+                        print "Parsing line - ", statsline
 
                         year = 1993
                         for year_val in statsline[3:]:

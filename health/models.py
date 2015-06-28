@@ -60,6 +60,7 @@ class HealthBMI(models.Model):
     BMI_MEAN = 'E'
     BMI_STDERR = 'S'
     BMI_BASE = 'A'
+    BMI_ALL = 'L'
 
     BMI_CHOICES = (
         (BMI_UNDERWEIGHT, 'Underweight'),
@@ -70,12 +71,15 @@ class HealthBMI(models.Model):
         (BMI_OVERWEIGHT_OBESE, 'Overweight including obese'),
         (BMI_MEAN, 'Mean'),
         (BMI_STDERR, 'Std error of the mean'),
-        (BMI_BASE, 'Base')
+        (BMI_BASE, 'Base'),
+        (BMI_ALL, 'All'),
     )
 
     year = models.IntegerField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
-    age = models.CharField(max_length=1, choices=AGE_CHOICES, default=AGE_16_TO_24)
+    age = models.CharField(max_length=8, choices=AGE_CHOICES, default=AGE_16_TO_24)
     bmi = models.CharField(max_length=1, choices=BMI_CHOICES, default=BMI_NORMAL)
+
+    percentage = models.FloatField(default=0.0)
 
 # Create your models here.
