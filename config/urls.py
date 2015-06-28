@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^users/', include("obesitydata.users.urls", namespace="users")),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^diagnosis/', include('diagnosis.urls')),
+    url(r'^health/', include('health.urls')),
 
     # Your stuff: custom urls includes go here
 

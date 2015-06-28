@@ -49,6 +49,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'obesitydata.users',  # custom users app
     'diagnosis',  # Obesity Diagosis statistics
+    'health',  # Obesity Diagosis statistics
     # Your stuff: custom apps go here
 )
 
