@@ -19,17 +19,17 @@ def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMAR
     else:
         admissions = AdmissionsByGender.objects.all().filter(diagnosis=diagnosis)
 
-        chartdata = {
-            'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],
-            'name1': 'Male',
-            'y1': admissions.filter(gender='M').values_list('admissions', flat=True).order_by('year'),
-            'name2': 'Female',
-            'y2': admissions.filter(gender='F').values_list('admissions', flat=True).order_by('year')
-        }
+    chartdata = {
+        'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],
+        'name1': 'Male',
+        'y1': admissions.filter(gender='M').values_list('admissions', flat=True).order_by('year'),
+        'name2': 'Female',
+        'y2': admissions.filter(gender='F').values_list('admissions', flat=True).order_by('year')
+    }
 
-        if diagnosis == AdmissionsByGender.PRIMARY:
-            chartdata['name3'] = 'Unknown'
-            chartdata['y3'] = admissions.filter(gender='U').values_list('admissions', flat=True).order_by('year'),
+    if diagnosis == AdmissionsByGender.PRIMARY:
+        chartdata['name3'] = 'Unknown'
+        chartdata['y3'] = admissions.filter(gender='U').values_list('admissions', flat=True).order_by('year')
 
     charttype = 'stackedAreaChart'
     chartcontainer = 'stackedarea_container'
@@ -56,7 +56,8 @@ def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMAR
         'surgery_table': table,
         'extra': {
             'x_is_date': True,
-            'x_axis_format': '%Y'
+            'x_axis_format': '%Y',
+            'y_axis_format': '%.0d'
         }
     }
 
