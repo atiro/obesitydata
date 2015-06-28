@@ -11,7 +11,7 @@ GENDER_CHOICES = (
     (UNKNOWN, 'Unknown'))
 
 
-class Admissions(models.Model):
+class AdmissionsByGender(models.Model):
     year = models.IntegerField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
     admissions = models.IntegerField()

@@ -1,24 +1,11 @@
 import django_tables2 as tables
-from .models import SurgeryByGender
+from .models import SurgeryByGender, AdmissionsByAge
 
 
-class MaleColumn(tables.Column):
-    def render(self, record):
-        if record.gender == "M":
-            return record.admissions
+class AdmissionsByAgeTable(tables.Table):
 
-
-class FemaleColumn(tables.Column):
-    def render(self, record):
-        if record.gender == "Female":
-            return record.admissions
-
-
-class UnknownColumn(tables.Column):
-    def render(self, record):
-        if record.gender == "Unknown":
-            return record.admissions
-
+    year = tables.Column(verbose_name="Year")
+    admissions_under_16 = tables.Column(verbose_name="Under 16")
 
 class SurgeryByGenderTable(tables.Table):
 
@@ -29,6 +16,7 @@ class SurgeryByGenderTable(tables.Table):
     male_admissions = tables.Column(verbose_name="Male")
     female_admissions = tables.Column(verbose_name="Female")
     unknown_admissions = tables.Column(verbose_name="Unknown")
+    total_admissions = tables.Column(verbose_name="Total")
 
 #    male = MaleColumn()
 #    female = FemaleColumn()
