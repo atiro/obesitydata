@@ -8,10 +8,10 @@ from . import views
 # place app url patterns here
 
 urlpatterns = [
-    url(r'^age/england$', views.age_england, name='admissions-by-age'),
-    url(r'^age/england/(?P<year>\d{4})$', views.age_england, name='admissions-y-age'),
-    url(r'^annual/england$', views.annual_england),
-    url(r'^annual/england/(?P<year>\d{4})$', views.annual_england),
+    url(r'^admissions/age$', views.admissions_by_age, name='admissions-by-age'),
+    url(r'^admissions/age/(?P<year>\d{4})$', views.admissions_by_age, name='admissions-y-age'),
+    url(r'^admissions/gender$', views.admissions_by_gender),
+    url(r'^admissiions/gender/(?P<year>\d{4})$', views.admissions_by_gender),
     url(r'^surgery/gender$', views.surgery_gender_england, name='surgery-by-gender'),
     url(r'^surgery/gender/(?P<year>\d{4})$', views.surgery_gender_england, name='surgery-by-gender')
 ]

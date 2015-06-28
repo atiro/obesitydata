@@ -1,14 +1,14 @@
 from datetime import datetime
 import itertools
 
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from django.db.models import F, Sum
 
 from django_tables2 import RequestConfig
 
 from diagnosis.models import AdmissionsByGender, AdmissionsByAge, SurgeryByGender
 
-from diagnosis.tables import SurgeryByGenderTable
+from diagnosis.tables import SurgeryByGenderTable, AdmissionsByAgeTable, AdmissionsByGenderTable
 
 
 def admissions_by_gender(request, year=None):
@@ -16,38 +16,49 @@ def admissions_by_gender(request, year=None):
     if year is not None:
         admissions = AdmissionsByGender.objects.all().filter(year=year)
 
-        return render_to_response('diagnosis/admissions-by-gender.html',
-                                  {'admissions': admissions})
     else:
         admissions = AdmissionsByGender.objects.all()
 
         chartdata = {
-            'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in Admissions.objects.values_list('year', flat=True).distinct().order_by('year')],
+            'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],
             'name1': 'Male',
-            'y1': AdmissionsByGender.objects.filter(gender='M').values_list('admissions', flat=True).order_by('year'),
+            'y1': admissions.filter(gender='M').values_list('admissions', flat=True).order_by('year'),
             'name2': 'Female',
-            'y2': AdmissionsByGender.objects.filter(gender='F').values_list('admissions', flat=True).order_by('year'),
+            'y2': admissions.filter(gender='F').values_list('admissions', flat=True).order_by('year'),
             'name3': 'Unknown',
-            'y3': AdmissionsByGender.objects.filter(gender='U').values_list('admissions', flat=True).order_by('year'),
+            'y3': admissions.filter(gender='U').values_list('admissions', flat=True).order_by('year'),
         }
 
-        charttype = 'stackedAreaChart'
-        chartcontainer = 'stackedarea_container'
+    charttype = 'stackedAreaChart'
+    chartcontainer = 'stackedarea_container'
 
-        table_surgery = {}
-        male_admissions = admissions.values('year').annotate(male_admissions=F('admissions')).filter(gender='M')
+    table_admissions = {}
+    male_admissions = admissions.values('year').annotate(male_admissions=F('admissions')).filter(gender='M')
+    female_admissions = admissions.values('year').annotate(female_admissions=F('admissions')).filter(gender='F')
+    unknown_admissions = admissions.values('year').annotate(unknown_admissions=F('admissions')).filter(gender='U')
+    total_admissions = admissions.values('year').annotate(total_admissions=Sum('admissions'))
 
-        data = {
-            'charttype': charttype,
-            'chartdata': chartdata,
-            'chartcontainer': chartcontainer,
-            'extra': {
-                'x_is_date': True,
-                'x_axis_format': '%Y'
-            }
+    for sur in itertools.chain(male_admissions, female_admissions, unknown_admissions, total_admissions):
+        if sur['year'] in table_admissions:
+            table_admissions[sur['year']].update(sur)
+        else:
+            table_admissions[sur['year']] = dict(sur)
+
+    table = AdmissionsByGenderTable(table_admissions.values())
+    RequestConfig(request).configure(table)
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'surgery_table': table,
+        'extra': {
+            'x_is_date': True,
+            'x_axis_format': '%Y'
         }
+    }
 
-        return render_to_response('diagnosis/admissions-by-gender.html', data)
+    return render(request, 'diagnosis/admissions-by-gender.html', data)
 
 # Create your views here.
 
@@ -73,58 +84,71 @@ def admissions_by_age(request, year=None):
         }
 
         charttype = 'discreteBarChart'
-#    chartcontainer = 'multibarchart_container'
-
-        data = {
-            'charttype': charttype,
-            'chartdata': chartdata,
-            'extra': {
-                'x_is_date': False,
-                'x_axis_format': '%s'
-            }
+        extra = {
+            'x_is_date': False,
+            'x_axis_format': '%s'
         }
-
-        return render_to_response('diagnosis/age-england.html', data)
 
     else:
         admissions = AdmissionsByAge.objects.all()
 
         chartdata = {
-            'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in AdmissionsByAge.objects.values_list('year', flat=True).distinct().order_by('year')],
+            'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],
             'name1': 'Under 16',
-            'y1': AdmissionsByAge.objects.all().values_list('age_under_16', flat=True).order_by('year'),
+            'y1': admissions.all().values_list('age_under_16', flat=True).order_by('year'),
             'name2': '16-24',
-            'y2': AdmissionsByAge.objects.all().values_list('age_16_to_24', flat=True).order_by('year'),
+            'y2': admissions.all().values_list('age_16_to_24', flat=True).order_by('year'),
             'name3': '25-34',
-            'y3': AdmissionsByAge.objects.all().values_list('age_25_to_34', flat=True).order_by('year'),
+            'y3': admissions.all().values_list('age_25_to_34', flat=True).order_by('year'),
             'name4': '35-44',
-            'y4': AdmissionsByAge.objects.all().values_list('age_35_to_44', flat=True).order_by('year'),
+            'y4': admissions.all().values_list('age_35_to_44', flat=True).order_by('year'),
             'name5': '45-54',
-            'y5': AdmissionsByAge.objects.all().values_list('age_45_to_54', flat=True).order_by('year'),
+            'y5': admissions.all().values_list('age_45_to_54', flat=True).order_by('year'),
             'name6': '55-64',
-            'y6': AdmissionsByAge.objects.all().values_list('age_55_to_64', flat=True).order_by('year'),
+            'y6': admissions.all().values_list('age_55_to_64', flat=True).order_by('year'),
             'name7': '65-74',
-            'y7': AdmissionsByAge.objects.all().values_list('age_65_to_74', flat=True).order_by('year'),
+            'y7': admissions.all().values_list('age_65_to_74', flat=True).order_by('year'),
             'name8': '75+',
-            'y8': AdmissionsByAge.objects.all().values_list('age_75_and_over', flat=True).order_by('year'),
+            'y8': admissions.all().values_list('age_75_and_over', flat=True).order_by('year'),
             'name9': 'Unknown',
-            'y9': AdmissionsByAge.objects.all().values_list('age_unknown', flat=True).order_by('year')
+            'y9': admissions.all().values_list('age_unknown', flat=True).order_by('year')
         }
 
         charttype = 'stackedAreaChart'
-        chartcontainer = 'stackedarea_container'
-
-        data = {
-            'charttype': charttype,
-            'chartdata': chartdata,
-            'chartcontainer': chartcontainer,
-            'extra': {
-                'x_is_date': True,
-                'x_axis_format': '%Y'
-            }
+        extra = {
+            'x_is_date': True,
+            'x_axis_format': '%Y'
         }
 
-        return render_to_response('diagnosis/age-england.html', data)
+    table_admissions = {}
+    admissions_under_16 = admissions.values('year', 'age_under_16').order_by('year')
+    admissions_16_24 = admissions.values('year', 'age_16_to_24').order_by('year')
+    admissions_25_34 = admissions.values('year', 'age_25_to_34').order_by('year')
+    admissions_35_44 = admissions.values('year', 'age_35_to_44').order_by('year')
+    admissions_45_54 = admissions.values('year', 'age_45_to_54').order_by('year')
+    admissions_55_64 = admissions.values('year', 'age_55_to_64').order_by('year')
+    admissions_65_74 = admissions.values('year', 'age_65_to_74').order_by('year')
+    admissions_75_and_over = admissions.values('year', 'age_75_and_over').order_by('year')
+    admissions_unknown = admissions.values('year', 'age_unknown').order_by('year')
+    admissions_total = admissions.values('year', 'total').order_by('year')
+
+    for sur in itertools.chain(admissions_under_16, admissions_16_24, admissions_25_34, admissions_35_44, admissions_45_54, admissions_55_64, admissions_65_74, admissions_75_and_over, admissions_unknown, admissions_total):
+        if sur['year'] in table_admissions:
+            table_admissions[sur['year']].update(sur)
+        else:
+            table_admissions[sur['year']] = dict(sur)
+
+    table = AdmissionsByAgeTable(table_admissions.values())
+    RequestConfig(request).configure(table)
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'extra': extra,
+        'surgery_table': table
+    }
+
+    return render(request, 'diagnosis/admissions-by-age.html', data)
 
 
 def surgery_gender_england(request, year=None):

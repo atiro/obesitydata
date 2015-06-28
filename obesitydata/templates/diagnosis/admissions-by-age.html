@@ -4,11 +4,14 @@
 
 {% load nvd3_tags %}
 
+{% load render_table from django_tables2 %}
+
 {% block css %}
 {{ block.super  }}
 
 <link media="all" href="{% static 'nvd3/build/nv.d3.css' %}" type="text/css" rel="stylesheet" />
 
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 
 {% endblock %}
 
@@ -23,14 +26,16 @@
 
 {% endblock %}
 
-
-{% block title %}Obesity Admission By Age{% endblock %}
+{% block title %}Admissions By Age{% endblock %}
 
 {% block content %}
 
-{% include_container "multibarchart_container" 400 600 %}
-
-Years - {{ chartdata.x }}
+<div style="float: left;">
+	{% include_container "multibarchart_container" 400 600 %}
+</div>
+<div style="float: right;">
+	{% render_table surgery_table %}
+</div>
 
 {% endblock content %}
 
