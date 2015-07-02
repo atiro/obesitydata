@@ -1,6 +1,57 @@
 from django.db import models
 
 
+class HealthActivity(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+    ALL = 'A'
+
+    GENDER_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+        (ALL, 'All')
+    )
+
+    AGE_16_TO_24 = '16-24'
+    AGE_25_TO_34 = '25-34'
+    AGE_35_TO_44 = '35-44'
+    AGE_45_TO_54 = '45-54'
+    AGE_55_TO_64 = '55-64'
+    AGE_65_TO_74 = '65-74'
+    AGE_75_PLUS = '75+'
+    AGE_ALL = 'ALL'
+
+    AGE_CHOICES = (
+        (AGE_16_TO_24, '16-24'),
+        (AGE_25_TO_34, '25-34'),
+        (AGE_35_TO_44, '35-44'),
+        (AGE_45_TO_54, '45-54'),
+        (AGE_55_TO_64, '55-64'),
+        (AGE_65_TO_74, '65-74'),
+        (AGE_75_PLUS, '75+'),
+        (AGE_ALL, 'All Ages'),
+    )
+
+    ACTIVITY_MEETS = 'Meets'
+    ACTIVITY_SOME = 'Some'
+    ACTIVITY_LOW = 'Low'
+    ACTIVITY_BASES = 'Bases'
+
+    ACTIVITY_CHOICES = (
+        (ACTIVITY_MEETS, 'Meets Activity'),
+        (ACTIVITY_SOME, 'Some Activity'),
+        (ACTIVITY_LOW, 'Low Activity'),
+        (ACTIVITY_BASES, 'Bases'),
+    )
+
+    year = models.CharField(max_length=16)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
+    age = models.CharField(max_length=8, choices=AGE_CHOICES, default=AGE_16_TO_24)
+    activity = models.CharField(max_length=5, choices=ACTIVITY_CHOICES, default=ACTIVITY_MEETS)
+
+    percentage = models.FloatField(default=0.0)
+
+
 class HealthWeight(models.Model):
     MALE = 'M'
     FEMALE = 'F'

@@ -66,10 +66,10 @@ def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMAR
 # Create your views here.
 
 
-def admissions_by_age(request, year=None):
+def admissions_by_age(request, year=None, diagnosis=AdmissionsByAge.PRIMARY):
 
     if year is not None:
-        admissions = AdmissionsByAge.objects.all().filter(year=year)
+        admissions = AdmissionsByAge.objects.all().filter(year=year).filter(diagnosis=diagnosis)
 
         chartdata = {
             'x': ['Under 16', '16-24', '25-34', '35-44', '45-54', '55-64', '65-74', '75+', 'Unknown'],
@@ -93,7 +93,7 @@ def admissions_by_age(request, year=None):
         }
 
     else:
-        admissions = AdmissionsByAge.objects.all()
+        admissions = AdmissionsByAge.objects.all().filter(diagnosis=diagnosis)
 
         chartdata = {
             'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],

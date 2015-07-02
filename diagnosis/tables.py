@@ -33,7 +33,7 @@ class AdmissionsByAgeTable(tables.Table):
     class Meta:
         model = AdmissionsByAge
         attrs = {"class": "paleblue"}
-        exclude = ('id', 'gender', 'admissions')
+        exclude = ('id', 'gender', 'admissions', 'diagnosis')
         sequence = ('year', 'age_under_16', '...', 'age_unknown', 'total')
 
 

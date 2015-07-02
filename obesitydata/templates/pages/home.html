@@ -2,7 +2,32 @@
 
 {% block content %}
 
-<a href="{% url 'admissions-by-age' %}">Admissions By Age</a>
-<a href="{% url 'surgery-by-gender' %}">Surgery By Gender</a>
+<h2> Obesity Diagnosis</h2>
 
+<ul>
+	<li><a href="{% url 'admissions_by_age_primary' %}">Admissions By Age (Primary Diagnosis)</a></li>
+	<li><a href="{% url 'admissions_by_age_secondary' %}">Admissions By Age (Primary/Secondary Diagnosis)</a></li>
+	<li><a href="{% url 'admissions_by_gender_primary' %}">Admissions By Gender (Primary Diagnosis)</a></li>
+	<li><a href="{% url 'admissions_by_gender_secondary' %}">Admissions By Gender (Primary/Secondary Diagnosis)</a></li>
+	<li><a href="{% url 'surgery_by_gender' %}">Surgery By Gender</a></li>
+	</ul>
+
+<h2> BMI </h2>
+
+<ul>
+	<li><a href="{% url 'bmi' %}">BMI (All Ages, Male & Female)</a></li>
+	<li><a href="{% url 'bmi_by_gender' 'male' %}">BMI (All Ages, Male)</a></li>
+	<li><a href="{% url 'bmi_by_gender' 'female' %}">BMI (All Ages, Female)</a></li>
+</ul>
+
+<!--
+<h2> Activity </h2>
+
+<ul>
+	<li><a href="{% url 'activity' %}">Activity (All Ages, Male & Female)</a></li>
+	<li><a href="{% url 'activity_by_gender' 'male' %}">Activity (All Ages, Male)</a></li>
+	<li><a href="{% url 'activity_by_gender' 'female' %}">Activity (All Ages, Female)</a></li>
+</ul>
+
+-->
 {% endblock %}
