@@ -44,7 +44,7 @@ class HealthActivity(models.Model):
         (ACTIVITY_BASES, 'Bases'),
     )
 
-    year = models.CharField(max_length=16)
+    year = models.IntegerField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
     age = models.CharField(max_length=8, choices=AGE_CHOICES, default=AGE_16_TO_24)
     activity = models.CharField(max_length=5, choices=ACTIVITY_CHOICES, default=ACTIVITY_MEETS)
@@ -130,6 +130,73 @@ class HealthBMI(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
     age = models.CharField(max_length=8, choices=AGE_CHOICES, default=AGE_16_TO_24)
     bmi = models.CharField(max_length=1, choices=BMI_CHOICES, default=BMI_NORMAL)
+
+    percentage = models.FloatField(default=0.0)
+
+# Create your models here.
+
+
+class HealthFruitVeg(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+    ALL = 'A'
+
+    GENDER_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+        (ALL, 'All')
+    )
+
+    AGE_16_TO_24 = '16-24'
+    AGE_25_TO_34 = '25-34'
+    AGE_35_TO_44 = '35-44'
+    AGE_45_TO_54 = '45-54'
+    AGE_55_TO_64 = '55-64'
+    AGE_65_TO_74 = '65-74'
+    AGE_75_PLUS = '75+'
+    AGE_ALL = 'ALL'
+
+    AGE_CHOICES = (
+        (AGE_16_TO_24, '16-24'),
+        (AGE_25_TO_34, '25-34'),
+        (AGE_35_TO_44, '35-44'),
+        (AGE_45_TO_54, '45-54'),
+        (AGE_55_TO_64, '55-64'),
+        (AGE_65_TO_74, '65-74'),
+        (AGE_75_PLUS, '75+'),
+        (AGE_ALL, 'All Ages'),
+    )
+
+    FRUITVEG_NONE = 'N'
+    FRUITVEG_LESS_1 = '1'
+    FRUITVEG_LESS_2 = '2'
+    FRUITVEG_LESS_3 = '3'
+    FRUITVEG_LESS_4 = '4'
+    FRUITVEG_LESS_5 = '5'
+    FRUITVEG_MORE_5 = '6'
+    FRUITVEG_MEAN = 'M'
+    FRUITVEG_STDERR = 'S'
+    FRUITVEG_MEDIAN = 'D'
+    FRUITVEG_BASE = 'B'
+
+    FRUITVEG_CHOICES = (
+        (FRUITVEG_NONE, 'No Fruit & Veg'),
+        (FRUITVEG_LESS_1, 'Under 1 portion'),
+        (FRUITVEG_LESS_2, '1-2 Portions'),
+        (FRUITVEG_LESS_3, '2-3 Portions'),
+        (FRUITVEG_LESS_4, '3-4 Portions'),
+        (FRUITVEG_LESS_5, '4-5 Portions'),
+        (FRUITVEG_MORE_5, '5+ Portions'),
+        (FRUITVEG_MEAN, 'Mean Portions'),
+        (FRUITVEG_STDERR, 'Standard error of the mean'),
+        (FRUITVEG_MEDIAN, 'Median Portions'),
+        (FRUITVEG_BASE, 'Standard error of the mean')
+    )
+
+    year = models.IntegerField()
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
+    age = models.CharField(max_length=8, choices=AGE_CHOICES, default=AGE_16_TO_24)
+    fruitveg = models.CharField(max_length=1, choices=FRUITVEG_CHOICES, default=FRUITVEG_NONE)
 
     percentage = models.FloatField(default=0.0)
 

@@ -1,5 +1,5 @@
 import csv
-from health.models import HealthWeight, HealthActivity, HealthBMI
+from health.models import HealthWeight, HealthActivity, HealthBMI, HealthFruitVeg
 
 from django.core.management.base import BaseCommand
 
@@ -11,6 +11,7 @@ class Command(BaseCommand):
         parser.add_argument('--hse_bmi', nargs=1, required=False)
         parser.add_argument('--hse_weight', nargs=1, required=False)
         parser.add_argument('--hse_activity', nargs=1, required=False)
+        parser.add_argument('--hse_fruitveg', nargs=1, required=False)
 
     def handle(self, *args, **options):
 
@@ -143,4 +144,77 @@ class Command(BaseCommand):
                             if year_val == '-':
                                 year_val = 0
                             health = HealthActivity(year=years[year_pos], gender=gender, age=age, activity=activity, percentage=year_val)
+                            health.save()
+
+        if options['hse_fruitveg']:
+            csvfilename = options['hse_fruitveg'][0]
+
+            if csvfilename.endswith(".csv"):
+                with open(csvfilename, 'rb') as csvfile:
+                    statsreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                    headers = statsreader.next()
+                    years = headers[3:]
+                    for statsline in statsreader:
+                        if statsline[0] == 'M':
+                            gender = HealthFruitVeg.MALE
+                        elif statsline[0] == 'W':
+                            gender = HealthFruitVeg.FEMALE
+                        elif statsline[0] == 'A':
+                            gender = HealthFruitVeg.ALL
+                        else:
+                            print("PARSE ERROR - UNKNOWN GENDER")
+                            exit(1)
+
+                        if statsline[1] == '16-24':
+                            age = HealthFruitVeg.AGE_16_TO_24
+                        elif statsline[1] == '25-34':
+                            age = HealthFruitVeg.AGE_25_TO_34
+                        elif statsline[1] == '35-44':
+                            age = HealthFruitVeg.AGE_35_TO_44
+                        elif statsline[1] == '45-54':
+                            age = HealthFruitVeg.AGE_45_TO_54
+                        elif statsline[1] == '55-64':
+                            age = HealthFruitVeg.AGE_55_TO_64
+                        elif statsline[1] == '65-74':
+                            age = HealthFruitVeg.AGE_65_TO_74
+                        elif statsline[1] == '75+':
+                            age = HealthFruitVeg.AGE_75_PLUS
+                        elif statsline[1] == 'All':
+                            age = HealthFruitVeg.AGE_ALL
+                        else:
+                            print("PARSE ERROR - Unknown age")
+                            exit(1)
+
+                        if statsline[2] == 'None':
+                            fruitveg = HealthFruitVeg.FRUITVEG_NONE
+                        elif statsline[2] == 'Less than 1 portion':
+                            fruitveg = HealthFruitVeg.FRUITVEG_LESS_1
+                        elif statsline[2] == '1 portion or more but less than 2':
+                            fruitveg = HealthFruitVeg.FRUITVEG_LESS_2
+                        elif statsline[2] == '2 portions or more but less than 3':
+                            fruitveg = HealthFruitVeg.FRUITVEG_LESS_3
+                        elif statsline[2] == '3 portions or more but less than 4':
+                            fruitveg = HealthFruitVeg.FRUITVEG_LESS_4
+                        elif statsline[2] == '4 portions or more but less than 5':
+                            fruitveg = HealthFruitVeg.FRUITVEG_LESS_5
+                        elif statsline[2] == '5 portions or more':
+                            fruitveg = HealthFruitVeg.FRUITVEG_MORE_5
+                        elif statsline[2] == 'Mean portions':
+                            fruitveg = HealthFruitVeg.FRUITVEG_MEAN
+                        elif statsline[2] == 'Standard error of the mean':
+                            fruitveg = HealthFruitVeg.FRUITVEG_STDERR
+                        elif statsline[2] == 'Median':
+                            fruitveg = HealthFruitVeg.FRUITVEG_MEDIAN
+                        elif statsline[2] == 'Bases':
+                            fruitveg = HealthFruitVeg.FRUITVEG_BASE
+                        else:
+                            print("PARSE ERROR - Unknown Activity: ", statsline[2])
+                            exit(1)
+
+                        print "Parsing line - ", statsline
+
+                        for year_pos, year_val in enumerate(statsline[3:]):
+                            if year_val == '-':
+                                year_val = 0
+                            health = HealthFruitVeg(year=years[year_pos], gender=gender, age=age, fruitveg=fruitveg, percentage=year_val)
                             health.save()

@@ -6,9 +6,9 @@ from django.db.models import F, Sum
 
 from django_tables2 import RequestConfig
 
-from .models import HealthBMI, HealthActivity
+from .models import HealthBMI, HealthActivity, HealthFruitVeg
 
-from .tables import BMIByGenderTable, ActivityByGenderTable
+from .tables import BMIByGenderTable, ActivityByGenderTable, FruitVegByGenderTa
 
 
 def bmi_by_gender(request, gender="all", age=HealthBMI.AGE_ALL, year=None):
@@ -167,3 +167,86 @@ def activity_by_gender(request, gender="all", age=HealthActivity.AGE_ALL, year=N
     }
 
     return render(request, 'health/activity-by-gender.html', data)
+
+def fruitveg_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None):
+
+    if gender == "male":
+        gender = HealthFruitVeg.MALE
+    elif gender == "female":
+        gender = HealthFruitVeg.FEMALE
+    else:
+        gender = HealthFruitVeg.ALL
+
+    if age == "16-24":
+        age = HealthFruitVeg.AGE_16_TO_24
+    elif age == "25-34":
+        age = HealthFruitVeg.AGE_25_TO_34
+    elif age == "35-44":
+        age = HealthFruitVeg.AGE_35_TO_44
+    elif age == "45-54":
+        age = HealthFruitVeg.AGE_45_TO_54
+    elif age == "55-64":
+        age = HealthFruitVeg.AGE_55_TO_64
+    elif age == "65-74":
+        age = HealthFruitVeg.AGE_65_TO_74
+    elif age == "75+":
+        age = HealthFruitVeg.AGE_75_PLUS
+    else:
+        age = HealthFruitVeg.AGE_ALL
+
+    if year is not None:
+        fruitveg = HealthFruitVeg.objects.all().filter(year=year).filter(gender=gender).filter(age=age)
+    else:
+        fruitveg = HealthFruitVeg.objects.all().filter(age=age)
+
+    chartdata = {
+        'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in fruitveg.values_list('year', flat=True).distinct().order_by('year')],
+        'name1': 'None',
+        'y1': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_NONE).values_list('percentage', flat=True).order_by('year'),
+        'name2': 'Less than 1',
+        'y2': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_1).values_list('percentage', flat=True).order_by('year'),
+        'name3': 'Between 1 and 2',
+        'y3': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_2).values_list('percentage', flat=True).order_by('year'),
+        'name4': 'Between 2 and 3',
+        'y4': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_3).values_list('percentage', flat=True).order_by('year'),
+        'name5': 'Between 3 and 4',
+        'y5': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_4).values_list('percentage', flat=True).order_by('year'),
+        'name6': 'Between 4 and 5',
+        'y6': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_5).values_list('percentage', flat=True).order_by('year'),
+        'name7': 'Over 5',
+        'y7': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_MORE_5).values_list('percentage', flat=True).order_by('year')
+    }
+
+    charttype = 'stackedAreaChart'
+    chartcontainer = 'stackedarea_container'
+
+    table_fruitveg = {}
+    fruitveg_none = fruitveg.values('year').annotate(fruitveg_none=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_NONE)
+    fruitveg_less_1 = fruitveg.values('year').annotate(fruitveg_less_1=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_1)
+#    female_admissions = admissions.values('year').annotate(female_admissions=F('admissions')).filter(gender='F')
+#    unknown_admissions = admissions.values('year').annotate(unknown_admissions=F('admissions')).filter(gender='U')
+#    total_admissions = admissions.values('year').annotate(total_admissions=Sum('admissions'))
+
+    for sur in itertools.chain(fruitveg_none, fruitveg_less_1):
+        if sur['year'] in table_fruitveg:
+            table_fruitveg[sur['year']].update(sur)
+        else:
+            table_fruitveg[sur['year']] = dict(sur)
+
+    table = FruitVegByGenderTable(table_fruitveg.values())
+    RequestConfig(request).configure(table)
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'surgery_table': table,
+        'title': 'Fruit & Veg',
+        'extra': {
+            'x_is_date': True,
+            'x_axis_format': '%Y',
+            'y_axis_format': '%.0f'
+        },
+    }
+
+    return render(request, 'health/fruitveg-by-gender.html', data)
