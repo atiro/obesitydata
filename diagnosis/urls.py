@@ -4,7 +4,7 @@ except ImportError:  # django < 1.4
     from django.conf.urls.defaults import *
 
 from . import views
-from models import AdmissionsByGender, AdmissionsByAge
+from .models import AdmissionsByGender, AdmissionsByAge
 
 # place app url patterns here
 
