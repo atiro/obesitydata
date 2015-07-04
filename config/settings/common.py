@@ -105,7 +105,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="mysql://obesity:obesity@192.168.1.69/obesitydata"),
+    'default': env.db("DATABASE_URL", default="mysql://obesity:obesity@localhost/obesity"),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 

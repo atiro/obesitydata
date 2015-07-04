@@ -6,9 +6,9 @@ from django.db.models import F, Sum
 
 from django_tables2 import RequestConfig
 
-from models import HealthBMI, HealthActivity
+from .models import HealthBMI, HealthActivity
 
-from tables import BMIByGenderTable, ActivityByGenderTable
+from .tables import BMIByGenderTable, ActivityByGenderTable
 
 
 def bmi_by_gender(request, gender="all", age=HealthBMI.AGE_ALL, year=None):

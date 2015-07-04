@@ -76,7 +76,7 @@ class Command(BaseCommand):
                             print("PARSE ERROR - Unknown BMI: ", statsline[2])
                             exit(1)
 
-                        print "Parsing line - ", statsline
+                        print("Parsing line - %s" % statsline)
 
                         year = 1993
                         for year_val in statsline[3:]:
@@ -137,7 +137,7 @@ class Command(BaseCommand):
                             print("PARSE ERROR - Unknown Activity: ", statsline[2])
                             exit(1)
 
-                        print "Parsing line - ", statsline
+                        print("Parsing line - %s" % statsline)
 
                         for year_pos, year_val in enumerate(statsline[3:]):
                             if year_val == '-':
