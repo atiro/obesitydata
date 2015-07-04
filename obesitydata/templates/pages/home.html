@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2> Obesity Diagnosis</h2>
+<h2> Find My Fit </h2>
 
 <ul>
 	<li><a href="{% url 'admissions_by_age_primary' %}">Admissions By Age (Primary Diagnosis)</a></li>
@@ -20,7 +20,6 @@
 	<li><a href="{% url 'bmi_by_gender' 'female' %}">BMI (All Ages, Female)</a></li>
 </ul>
 
-<!--
 <h2> Activity </h2>
 
 <ul>
@@ -29,5 +28,12 @@
 	<li><a href="{% url 'activity_by_gender' 'female' %}">Activity (All Ages, Female)</a></li>
 </ul>
 
--->
+<h2> Fruit & Veg </h2>
+
+<ul>
+	<li><a href="{% url 'fruitveg' %}">Fruit & Veg Portions (All Ages, Male & Female)</a></li>
+	<li><a href="{% url 'fruitveg_by_gender' 'male' %}">Fruit & Veg Portions (All Ages, Male)</a></li>
+	<li><a href="{% url 'fruitveg_by_gender' 'female' %}">Fruit & Veg Portions (All Ages, Female)</a></li>
+</ul>
+
 {% endblock %}
