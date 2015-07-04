@@ -18,9 +18,9 @@ class Command(BaseCommand):
             csvfilename = options['hse_bmi'][0]
 
             if csvfilename.endswith(".csv"):
-                with open(csvfilename, 'rb') as csvfile:
+                with open(csvfilename, 'r') as csvfile:
                     statsreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-                    headers = statsreader.next()
+                    headers = next(statsreader)
                     for statsline in statsreader:
                         if statsline[0] == 'M':
                             gender = HealthBMI.MALE
