@@ -14,10 +14,18 @@ urlpatterns = [
         name='bmi_by_gender'),
     url(r'^bmi/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.bmi_by_gender,
         name='bmi_by_gender_age'),
+
     url(r'^activity/$', views.activity_by_gender,
         name='activity'),
     url(r'^activity/(?P<gender>(male|female|all))$', views.activity_by_gender,
         name='activity_by_gender'),
     url(r'^activity/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.activity_by_gender,
-        name='activity_by_gender_age')
+        name='activity_by_gender_age'),
+
+    url(r'^fruitveg/$', views.fruitveg_by_gender,
+        name='fruitveg'),
+    url(r'^fruitveg/(?P<gender>(male|female|all))$', views.fruitveg_by_gender,
+        name='fruitveg_by_gender'),
+    url(r'^fruitveg/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.fruitveg_by_gender,
+        name='fruitveg_by_gender_age')
 ]
