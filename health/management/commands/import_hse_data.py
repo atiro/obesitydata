@@ -91,9 +91,9 @@ class Command(BaseCommand):
             csvfilename = options['hse_activity'][0]
 
             if csvfilename.endswith(".csv"):
-                with open(csvfilename, 'rb') as csvfile:
+                with open(csvfilename, 'r') as csvfile:
                     statsreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-                    headers = statsreader.next()
+                    headers = next(statsreader)
                     years = headers[3:]
                     for statsline in statsreader:
                         if statsline[0] == 'M':
@@ -150,9 +150,9 @@ class Command(BaseCommand):
             csvfilename = options['hse_fruitveg'][0]
 
             if csvfilename.endswith(".csv"):
-                with open(csvfilename, 'rb') as csvfile:
+                with open(csvfilename, 'r') as csvfile:
                     statsreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-                    headers = statsreader.next()
+                    headers = next(statsreader)
                     years = headers[3:]
                     for statsline in statsreader:
                         if statsline[0] == 'M':
@@ -211,7 +211,7 @@ class Command(BaseCommand):
                             print("PARSE ERROR - Unknown Activity: ", statsline[2])
                             exit(1)
 
-                        print "Parsing line - ", statsline
+                        print("Parsing line - %s" % statsline)
 
                         for year_pos, year_val in enumerate(statsline[3:]):
                             if year_val == '-':

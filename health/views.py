@@ -8,7 +8,7 @@ from django_tables2 import RequestConfig
 
 from .models import HealthBMI, HealthActivity, HealthFruitVeg
 
-from .tables import BMIByGenderTable, ActivityByGenderTable, FruitVegByGenderTa
+from .tables import BMIByGenderTable, ActivityByGenderTable, FruitVegByGenderTable
 
 
 def bmi_by_gender(request, gender="all", age=HealthBMI.AGE_ALL, year=None):

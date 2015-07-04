@@ -2,8 +2,36 @@
 
 {% block content %}
 
-<h2> Find My Fit </h2>
 
+<div>
+<h1>Find My Fit</h1>
+</div>
+
+<div style="float: left;">
+<h3>My Gender</h3>
+<button type="button" class="btn btn-primary">Male</button>
+<button type="button" class="btn btn-success">Female</button>
+
+<h3>My Age</h3>
+<button type="button" class="btn btn-default">0-16</button>
+<button type="button" class="btn btn-primary">16-24</button>
+<button type="button" class="btn btn-success">25-34</button>
+<button type="button" class="btn btn-info">35-44</button>
+<button type="button" class="btn btn-warning">45-54</button>
+<button type="button" class="btn btn-danger">55-64</button>
+
+<h3>My Activity</h3>
+<h3>My Alcohol</h3>
+<h3>My Diet</h3>
+
+<h3>Results</h3>
+You are more active than 43.2% of the UK population.<br/>
+You consume 2 portions more fruit & veg than 25.6% of the UK population....
+
+</div>
+<div style="float: right;">
+
+<h3>Health Data</h3>
 <ul>
 	<li><a href="{% url 'admissions_by_age_primary' %}">Admissions By Age (Primary Diagnosis)</a></li>
 	<li><a href="{% url 'admissions_by_age_secondary' %}">Admissions By Age (Primary/Secondary Diagnosis)</a></li>
@@ -35,5 +63,7 @@
 	<li><a href="{% url 'fruitveg_by_gender' 'male' %}">Fruit & Veg Portions (All Ages, Male)</a></li>
 	<li><a href="{% url 'fruitveg_by_gender' 'female' %}">Fruit & Veg Portions (All Ages, Female)</a></li>
 </ul>
+
+</div>
 
 {% endblock %}
