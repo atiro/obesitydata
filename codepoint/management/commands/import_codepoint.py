@@ -19,7 +19,7 @@ class Command(BaseCommand):
         for root, dir, files in os.walk(datadir):
             for file in files:
                 if file.endswith(".csv"):
-                    with open(file, 'r') as csvfile:
+                    with open(os.path.join(root, file), 'r') as csvfile:
                         cpreader = csv.reader(csvfile, delimiter=',', quotechar='"')
                         for cpline in cpreader:
                             if len(cpline) != 10:
