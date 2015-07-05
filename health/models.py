@@ -1,6 +1,21 @@
 from django.db import models
 
 
+class Health(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+    ALL = 'A'
+
+    GENDER_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+        (ALL, 'All')
+    )
+
+    class Meta:
+        abstract = True
+
+
 class HealthActivity(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -197,6 +212,42 @@ class HealthFruitVeg(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
     age = models.CharField(max_length=8, choices=AGE_CHOICES, default=AGE_16_TO_24)
     fruitveg = models.CharField(max_length=1, choices=FRUITVEG_CHOICES, default=FRUITVEG_NONE)
+
+    percentage = models.FloatField(default=0.0)
+
+# Create your models here.
+
+
+class HealthHealth(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+    ALL = 'A'
+
+    GENDER_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+        (ALL, 'All')
+    )
+
+    HEALTH_VG = 'VG'
+    HEALTH_VB = 'VB'
+    HEALTH_ILL = 'ILL'
+    HEALTH_SICK = 'SICK'
+    HEALTH_ALL = 'ALL'
+    HEALTH_BASE = 'BASE'
+
+    HEALTH_CHOICES = (
+        (HEALTH_VG, 'Very good/good health'),
+        (HEALTH_VB, 'Very bad/bad health'),
+        (HEALTH_ILL, 'At least one longstanding illness'),
+        (HEALTH_SICK, 'Acute sickness'),
+        (HEALTH_ALL, 'All'),
+        (HEALTH_BASE, 'Bases'),
+    )
+
+    year = models.IntegerField()
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MALE)
+    health = models.CharField(max_length=4, choices=HEALTH_CHOICES, default=HEALTH_VG)
 
     percentage = models.FloatField(default=0.0)
 
