@@ -13,6 +13,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        count = 0
+        bulk_insert = 100
+        codepoints = []
+
         if options['datadir']:
             datadir = options['datadir'][0]
 
@@ -27,4 +31,13 @@ class Command(BaseCommand):
                                 next
 
                             codepoint = CodePoint(postcode=cpline[0], pos_quality=cpline[1], eastings=cpline[2], northings=cpline[3], country_code=cpline[4], nhs_regional_ha_code=cpline[5], nhs_ha_code=cpline[6], admin_county_code=cpline[7], admin_district_code=cpline[8], admin_ward_code=cpline[9])
-                            codepoint.save()
+                            codepoints.append(codepoint)
+                            if count > bulk_insert:
+                                CodePoint.objects.bulk_create(codepoints)
+                                codepoints = []
+                                count = 0
+                            else:
+                                count += 1
+
+                        if count > 0:
+                                CodePoint.objects.bulk_create(codepoints)
