@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         count = 0
-        bulk_insert = 100
+        bulk_insert = 250
         codepoints = []
 
         if options['datadir']:
@@ -30,8 +30,9 @@ class Command(BaseCommand):
                                 print("Unknown line (skipped): %s" % cpline)
                                 next
 
-                            codepoint = CodePoint(postcode=cpline[0], pos_quality=cpline[1], eastings=cpline[2], northings=cpline[3], country_code=cpline[4], nhs_regional_ha_code=cpline[5], nhs_ha_code=cpline[6], admin_county_code=cpline[7], admin_district_code=cpline[8], admin_ward_code=cpline[9])
+                            codepoint = CodePoint(postcode=cpline[0].strip(), pos_quality=cpline[1], eastings=cpline[2], northings=cpline[3], country_code=cpline[4], nhs_regional_ha_code=cpline[5], nhs_ha_code=cpline[6], admin_county_code=cpline[7], admin_district_code=cpline[8], admin_ward_code=cpline[9])
                             codepoints.append(codepoint)
+
                             if count > bulk_insert:
                                 CodePoint.objects.bulk_create(codepoints)
                                 codepoints = []
