@@ -5,7 +5,7 @@ from django.db import models
 
 class CodePoint(models.Model):
 
-    postcode = models.CharField(max_length=7)
+    postcode = models.CharField(max_length=7, db_index=True)
     pos_quality = models.IntegerField()
     eastings = models.IntegerField()
     northings = models.IntegerField()
