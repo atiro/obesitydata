@@ -6,9 +6,9 @@ from django.db.models import F, Sum
 
 from django_tables2 import RequestConfig
 
-from .models import HealthBMI, HealthActivity, HealthFruitVeg
+from .models import HealthBMI, HealthActivity, HealthFruitVeg, HealthHealth
 
-from .tables import BMIByGenderTable, ActivityByGenderTable, FruitVegByGenderTable
+from .tables import BMIByGenderTable, ActivityByGenderTable, FruitVegByGenderTable, HealthByGenderTable
 
 
 def bmi_by_gender(request, gender="all", age=HealthBMI.AGE_ALL, year=None):
@@ -250,3 +250,63 @@ def fruitveg_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=N
     }
 
     return render(request, 'health/fruitveg-by-gender.html', data)
+
+def health_by_gender(request, gender="all", year=None):
+
+    if gender == "male":
+        gender = HealthHealth.MALE
+    elif gender == "female":
+        gender = HealthHealth.FEMALE
+    else:
+        gender = HealthHealth.ALL
+
+    if year is not None:
+        health = HealthHealth.objects.all().filter(year=year).filter(gender=gender)
+    else:
+        health = HealthHealth.objects.all()
+
+    chartdata = {
+        'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in health.values_list('year', flat=True).distinct().order_by('year')],
+        'name1': 'Very Good/Good',
+        'y1': health.filter(gender=gender).filter(health=HealthHealth.HEALTH_VG).values_list('percentage', flat=True).order_by('year'),
+        'name2': 'Very Bad/Bad',
+        'y2': health.filter(gender=gender).filter(health=HealthHealth.HEALTH_VB).values_list('percentage', flat=True).order_by('year'),
+        'name3': 'At least one longstanding illness',
+        'y3': health.filter(gender=gender).filter(health=HealthHealth.HEALTH_ILL).values_list('percentage', flat=True).order_by('year'),
+        'name4': 'Acute sickness',
+        'y4': health.filter(gender=gender).filter(health=HealthHealth.HEALTH_SICK).values_list('percentage', flat=True).order_by('year'),
+    }
+
+    charttype = 'stackedAreaChart'
+    chartcontainer = 'stackedarea_container'
+
+    table_health = {}
+    health_vg = health.values('year').annotate(health_vg=F('percentage')).filter(gender=gender).filter(health=HealthHealth.HEALTH_VG)
+    health_vb = health.values('year').annotate(health_vb=F('percentage')).filter(gender=gender).filter(health=HealthHealth.HEALTH_VB)
+#    female_admissions = admissions.values('year').annotate(female_admissions=F('admissions')).filter(gender='F')
+#    unknown_admissions = admissions.values('year').annotate(unknown_admissions=F('admissions')).filter(gender='U')
+#    total_admissions = admissions.values('year').annotate(total_admissions=Sum('admissions'))
+
+    for sur in itertools.chain(health_vg, health_vb):
+        if sur['year'] in table_health:
+            table_health[sur['year']].update(sur)
+        else:
+            table_health[sur['year']] = dict(sur)
+
+    table = HealthByGenderTable(table_health.values())
+    RequestConfig(request).configure(table)
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'surgery_table': table,
+        'title': 'Health',
+        'extra': {
+            'x_is_date': True,
+            'x_axis_format': '%Y',
+            'y_axis_format': '%.0f'
+        },
+    }
+
+    return render(request, 'health/health-by-gender.html', data)

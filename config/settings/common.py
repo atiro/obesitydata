@@ -50,6 +50,7 @@ LOCAL_APPS = (
     'obesitydata.users',  # custom users app
     'diagnosis',  # Obesity Diagosis statistics
     'health',  # Obesity Diagosis statistics
+    'codepoint',
     # Your stuff: custom apps go here
 )
 
@@ -273,4 +274,6 @@ BOWER_COMPONENTS_ROOT = os.path.join(APPLICATION_DIR, 'components')
 BOWER_INSTALLED_APPS = (
     'd3#3.3.13',
     'nvd3#1.7.1',
+    'seiyria-bootstrap-slider#4.10.1',
 )
+

@@ -1,5 +1,5 @@
 import csv
-from health.models import HealthWeight, HealthActivity, HealthBMI, HealthFruitVeg
+from health.models import HealthWeight, HealthActivity, HealthBMI, HealthFruitVeg, HealthHealth
 
 from django.core.management.base import BaseCommand
 
@@ -12,6 +12,7 @@ class Command(BaseCommand):
         parser.add_argument('--hse_weight', nargs=1, required=False)
         parser.add_argument('--hse_activity', nargs=1, required=False)
         parser.add_argument('--hse_fruitveg', nargs=1, required=False)
+        parser.add_argument('--hse_health', nargs=1, required=False)
 
     def handle(self, *args, **options):
 
@@ -218,3 +219,44 @@ class Command(BaseCommand):
                                 year_val = 0
                             health = HealthFruitVeg(year=years[year_pos], gender=gender, age=age, fruitveg=fruitveg, percentage=year_val)
                             health.save()
+
+        if options['hse_health']:
+            csvfilename = options['hse_health'][0]
+
+            if csvfilename.endswith(".csv"):
+                with open(csvfilename, 'r') as csvfile:
+                    statsreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                    headers = next(statsreader)
+                    years = headers[2:]
+                    for statsline in statsreader:
+                        if statsline[0] == 'M':
+                            gender = HealthHealth.MALE
+                        elif statsline[0] == 'W':
+                            gender = HealthHealth.FEMALE
+                        elif statsline[0] == 'A':
+                            gender = HealthHealth.ALL
+                        else:
+                            print("PARSE ERROR - UNKNOWN GENDER")
+                            exit(1)
+
+                        if statsline[1] == 'Very good/good health':
+                            health = HealthHealth.HEALTH_VG
+                        elif statsline[1] == 'Very bad/bad health':
+                            health = HealthHealth.HEALTH_VB
+                        elif statsline[1] == 'At least one longstanding illness':
+                            health = HealthHealth.HEALTH_ILL
+                        elif statsline[1] == 'Acute sickness':
+                            health = HealthHealth.HEALTH_SICK
+                        elif statsline[1] == 'All':
+                            health = HealthHealth.HEALTH_ALL
+                        else:
+                            print("PARSE ERROR - Unknown Activity: ", statsline[1])
+                            exit(1)
+
+                        print("Parsing line - %s" % statsline)
+
+                        for year_pos, year_val in enumerate(statsline[2:]):
+                            if year_val == '-':
+                                year_val = 0
+                            healthhealth = HealthHealth(year=years[year_pos], gender=gender, health=health, percentage=year_val)
+                            healthhealth.save()

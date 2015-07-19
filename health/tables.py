@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from .models import HealthBMI, HealthActivity, HealthFruitVeg
+from .models import HealthBMI, HealthActivity, HealthFruitVeg, HealthHealth
 
 
 class BMIByGenderTable(tables.Table):
@@ -60,3 +60,21 @@ class FruitVegByGenderTable(tables.Table):
         model = HealthFruitVeg
         attrs = {"class": "paleblue"}
         exclude = ('id', 'age', 'fruitveg', 'percentage', 'gender')
+
+class HealthByGenderTable(tables.Table):
+
+    year = tables.Column(verbose_name="Year")
+
+    vg_health = tables.Column(verbose_name="Very Good/Good Health")
+    vb_health = tables.Column(verbose_name="Very Bad/Bad Health")
+    ill_health = tables.Column(verbose_name="At Least 1 longstanding illness")
+    acute_health = tables.Column(verbose_name="Acute Sickness")
+
+#    female_admissions = tables.Column(verbose_name="Female")
+#    unknown_admissions = tables.Column(verbose_name="Unknown")
+#    total_admissions = tables.Column(verbose_name="Total")
+
+    class Meta:
+        model = HealthHealth
+        attrs = {"class": "paleblue"}
+        exclude = ('id', 'age', 'percentage', 'gender')

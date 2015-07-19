@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load nvd3_tags %}
+
+{% block css %}
+{{ block.super  }}
+
+<link media="all" href="{% static 'nvd3/build/nv.d3.css' %}" type="text/css" rel="stylesheet" />
+
+{% endblock %}
+
+{% block javascript %}
+
+{{ block.super }}
+
+<script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
+<script type="text/javascript" src='{% static 'nvd3/build/nv.d3.min.js' %}'></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+$('#gender').on('click', function(e) {
+
+	// Load graph with URL based on buttons
+
+	d3.json('/diagnoses/gender/male', function(data) {
+		nv.addGraph(function() {
+			var chart = nv.models.lineChart();
+
+			// Chart setup TODO
+
+			d3.select('#graph-gender')
+				.datum(data)
+				.call(chart);
+
+			return chart;
+		});
+	});
+
+	$('#g-gender').removeClass('hide')
+	$('#i-gender').removeClass('hide')
+	$('#q-age').removeClass('hide')
+	});
+
+$('#age').on('click', function(e) {
+	$('#g-age').removeClass('hide')
+	$('#i-age').removeClass('hide')
+	$('#q-activity').removeClass('hide')
+	});
+});
+
+{% load_chart charttype chartdata "multibarchart_container" extra %}
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="col-md-3">
+	<div id="g-gender" class="hide">
+		{% include_container "multibarchart_container" 200 300 %}
+		Gender Graph</div>
+	<div id="g-age" class="hide">Age Graph</div>
+	<div id="g-activity" class="hide">Activity Graph</div>
+</div>
+
+<div class="col-md-6">
+<div>
+<h1>Find My Fit</h1>
+</div>
+
+	<div id="q-gender">
+<div class="btn-group" role="group" id="gender" style="padding-bottom: 20px;">
+<button id="a-male" type="button" class="btn btn-primary">Male</button>
+<button id="a-female" type="button" class="btn btn-success">Female</button>
+</div>
+
+	</div>
+
+	<div id="q-age" class="hide">
+<div class="btn-group" role="group" id="age">
+<button type="button" class="btn btn-default">0-16</button>
+<button type="button" class="btn btn-primary">16-24</button>
+<button type="button" class="btn btn-success">25-34</button>
+<button type="button" class="btn btn-info">35-44</button>
+<button type="button" class="btn btn-warning">45-54</button>
+<button type="button" class="btn btn-danger">55-64</button>
+	</div>
+	</div>
+
+	<div id="q-activity" class="hide">
+<h3>My Activity</h3>
+
+You are more active than 43.9% of the UK population.<br/>
+	</div>
+
+	<div id="q-alcohol" class="hide">
+<h3>My Alcohol</h3>
+	</div>
+
+	<div id="q-diet" class="hide">
+<h3>My Diet (Fruit/Veg Portions a day)</h3>
+<button type="button" class="btn btn-default">None</button>
+<button type="button" class="btn btn-primary">0-1</button>
+<button type="button" class="btn btn-success">1-2</button>
+<button type="button" class="btn btn-info">2-3</button>
+<button type="button" class="btn btn-warning">3-4</button>
+<button type="button" class="btn btn-danger">4-5</button>
+<br/>
+You consume 2 portions more fruit & veg than 25.6% of the UK population....
+	</div>
+
+	<div id="q-smoking" class="hide">
+<h3>My Smoking</h3>
+	</div>
+
+</div>
+<div class="col-md-3">
+	<div id="i-gender" class="hide">Info Gender</div>
+	<div id="i-age" class="hide">Info Age</div>
+	<div id="i-activity" class="hide">Info Activity</div>
+</div>
+
+{% endblock %}

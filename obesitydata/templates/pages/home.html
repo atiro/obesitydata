@@ -21,12 +21,27 @@
 <button type="button" class="btn btn-danger">55-64</button>
 
 <h3>My Activity</h3>
+
+You are more active than 43.9% of the UK population.<br/>
+
 <h3>My Alcohol</h3>
-<h3>My Diet</h3>
+
+<h3>My Diet (Fruit/Veg Portions a day)</h3>
+<button type="button" class="btn btn-default">None</button>
+<button type="button" class="btn btn-primary">0-1</button>
+<button type="button" class="btn btn-success">1-2</button>
+<button type="button" class="btn btn-info">2-3</button>
+<button type="button" class="btn btn-warning">3-4</button>
+<button type="button" class="btn btn-danger">4-5</button>
+<br/>
+You consume 2 portions more fruit & veg than 25.6% of the UK population....
+
+<h3>My Smoking</h3>
+
+	<input id="age" type="text" data-slider-ticks="[0, 50, 100, 150, 200]" data-slider-ticks-snap-bounds="30" data-slider-ticks-labels="['$0', '$100', '$200', '$300', '$400']" ticks_positions="[0, 30, 60, 70, 90, 100]" />
+
 
 <h3>Results</h3>
-You are more active than 43.2% of the UK population.<br/>
-You consume 2 portions more fruit & veg than 25.6% of the UK population....
 
 </div>
 <div style="float: right;">
@@ -64,6 +79,38 @@ You consume 2 portions more fruit & veg than 25.6% of the UK population....
 	<li><a href="{% url 'fruitveg_by_gender' 'female' %}">Fruit & Veg Portions (All Ages, Female)</a></li>
 </ul>
 
+<h2> Health </h2>
+
+<ul>
+	<li><a href="{% url 'health' %}">Self Reported Health (Male & Female)</a></li>
+	<li><a href="{% url 'health_by_gender' 'male' %}">Self Reported Health (Male)</a></li>
+	<li><a href="{% url 'health_by_gender' 'female' %}">Self Reported Health (Female)</a></li>
+</ul>
+
 </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+{{ block.super }}
+
+<script type="text/javascript" src="{{ STATIC_URL }}seiyria-bootstrap-slider/js/bootstrap-slider.js"></script>
+
+<link rel="stylesheet" src="{{ STATIC_URL }}seiyria-bootstrap-slider/css/bootstrap-slider.css"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$('#age').slider({
+		ticks: [0, 50, 100, 150, 200],
+		ticks_positions: [0, 30, 60, 70, 90, 100],
+		ticks_labels: ['$0', '$100', '$200', '$300', '$400'],
+		ticks_snap_bounds: 30,
+		orientation: 'horizontal'
+	});
+});
+
+</script>
 
 {% endblock %}

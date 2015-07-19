@@ -27,5 +27,10 @@ urlpatterns = [
     url(r'^fruitveg/(?P<gender>(male|female|all))$', views.fruitveg_by_gender,
         name='fruitveg_by_gender'),
     url(r'^fruitveg/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.fruitveg_by_gender,
-        name='fruitveg_by_gender_age')
+        name='fruitveg_by_gender_age'),
+
+    url(r'^health/$', views.health_by_gender,
+        name='health'),
+    url(r'^health/(?P<gender>(male|female|all))$', views.health_by_gender,
+        name='health_by_gender')
 ]
