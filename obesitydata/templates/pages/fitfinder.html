@@ -25,15 +25,26 @@ $('#gender').on('click', function(e) {
 
 	// Load graph with URL based on buttons
 
-	d3.json('/diagnoses/gender/male', function(data) {
+
+	d3.json('/diagnosis/admissions/gender/primary', function(data) {
 		nv.addGraph(function() {
-			var chart = nv.models.lineChart();
+			var chart = nv.models.stackedAreaChart()
+				.x(function(d) { return d[0] })
+				.y(function(d) { return d[1] })
+				.showControls(false)
+				.clipEdge(true);
+
+			chart.xAxis.tickFormat(function(d) {
+				return d3.time.format('%x')(new Date(d))
+			});
 
 			// Chart setup TODO
 
-			d3.select('#graph-gender')
+			d3.select('#chart svg')
 				.datum(data)
 				.call(chart);
+
+			nv.utils.windowResize(chart.update);
 
 			return chart;
 		});
@@ -42,6 +53,7 @@ $('#gender').on('click', function(e) {
 	$('#g-gender').removeClass('hide')
 	$('#i-gender').removeClass('hide')
 	$('#q-age').removeClass('hide')
+
 	});
 
 $('#age').on('click', function(e) {
@@ -50,8 +62,6 @@ $('#age').on('click', function(e) {
 	$('#q-activity').removeClass('hide')
 	});
 });
-
-{% load_chart charttype chartdata "multibarchart_container" extra %}
 
 </script>
 
@@ -62,8 +72,10 @@ $('#age').on('click', function(e) {
 
 <div class="col-md-3">
 	<div id="g-gender" class="hide">
-		{% include_container "multibarchart_container" 200 300 %}
-		Gender Graph</div>
+		<div id="chart">
+			    <svg style="height: 200px;"></svg>
+		</div>
+	</div>
 	<div id="g-age" class="hide">Age Graph</div>
 	<div id="g-activity" class="hide">Activity Graph</div>
 </div>

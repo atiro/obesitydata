@@ -1,8 +1,10 @@
 from datetime import datetime
 import itertools
+import json
 
 from django.shortcuts import render
 from django.db.models import F, Sum
+from django.http import JsonResponse, HttpResponse
 
 from django_tables2 import RequestConfig
 
@@ -20,16 +22,16 @@ def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMAR
         admissions = AdmissionsByGender.objects.all().filter(diagnosis=diagnosis)
 
     chartdata = {
-        'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],
+        'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
         'name1': 'Male',
-        'y1': admissions.filter(gender='M').values_list('admissions', flat=True).order_by('year'),
+        'y1': list(admissions.filter(gender='M').values_list('admissions', flat=True).order_by('year')),
         'name2': 'Female',
-        'y2': admissions.filter(gender='F').values_list('admissions', flat=True).order_by('year')
+        'y2': list(admissions.filter(gender='F').values_list('admissions', flat=True).order_by('year'))
     }
 
     if diagnosis == AdmissionsByGender.PRIMARY:
         chartdata['name3'] = 'Unknown'
-        chartdata['y3'] = admissions.filter(gender='U').values_list('admissions', flat=True).order_by('year')
+        chartdata['y3'] = list(admissions.filter(gender='U').values_list('admissions', flat=True).order_by('year'))
 
     charttype = 'stackedAreaChart'
     chartcontainer = 'stackedarea_container'
@@ -61,7 +63,11 @@ def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMAR
         }
     }
 
-    return render(request, 'diagnosis/admissions-by-gender.html', data)
+#    if 'application/json' in request.META.get('accept'):
+    return JsonResponse([{ 'key': 'Male', 'values': zip(chartdata['x'], chartdata['y1']) }], safe=False)
+#    return (json.dumps(chartdata, skipkeys=True), content_type='application/json')
+#    else:
+#       return render(request, 'diagnosis/admissions-by-gender.html', data)
 
 # Create your views here.
 
