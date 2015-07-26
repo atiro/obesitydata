@@ -11,6 +11,8 @@ from .models import AdmissionsByGender, AdmissionsByAge
 urlpatterns = [
     url(r'^admissions/age/primary$', views.admissions_by_age,
         {'diagnosis': AdmissionsByAge.PRIMARY}, name='admissions_by_age_primary'),
+    url(r'^admissions/age/primary/(?P<age>(all|75\+|[\d-]+))$', views.admissions_by_age,
+        {'diagnosis': AdmissionsByAge.PRIMARY}, name='admissions_by_age_primary_gender'),
     url(r'^admissions/age/primary/(?P<year>\d{4})$', views.admissions_by_age,
         {'diagnosis': AdmissionsByAge.PRIMARY}, name='admissions_by_age_primary'),
     url(r'^admissions/age/secondary$', views.admissions_by_age,
@@ -22,6 +24,9 @@ urlpatterns = [
     url(r'^admissions/gender/primary$', views.admissions_by_gender,
         {'diagnosis': AdmissionsByGender.PRIMARY},
         name='admissions_by_gender_primary'),
+    url(r'^admissions/gender/primary/(?P<gender>(M|F))$', views.admissions_by_gender,
+        {'diagnosis': AdmissionsByGender.PRIMARY},
+        name='admissions_by_gender_primary_gender'),
     url(r'^admissions/gender/primary/(?P<year>\d{4})$',
         views.admissions_by_gender, {'diagnosis': AdmissionsByGender.PRIMARY},
         name='admissions_by_gender_primary'),

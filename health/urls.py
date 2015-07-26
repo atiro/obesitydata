@@ -22,12 +22,12 @@ urlpatterns = [
     url(r'^activity/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.activity_by_gender,
         name='activity_by_gender_age'),
 
-    url(r'^fruitveg/$', views.fruitveg_by_gender,
-        name='fruitveg'),
-    url(r'^fruitveg/(?P<gender>(male|female|all))$', views.fruitveg_by_gender,
-        name='fruitveg_by_gender'),
-    url(r'^fruitveg/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.fruitveg_by_gender,
-        name='fruitveg_by_gender_age'),
+    url(r'^diet/$', views.diet_by_gender,
+        name='diet'),
+    url(r'^diet/(?P<gender>(male|female|all))$', views.diet_by_gender,
+        name='diet_by_gender'),
+    url(r'^diet/(?P<gender>(male|female|all))/(?P<age>[\d\-]+)$', views.diet_by_gender,
+        name='diet_by_gender_age'),
 
     url(r'^health/$', views.health_by_gender,
         name='health'),

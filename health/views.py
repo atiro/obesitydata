@@ -2,7 +2,8 @@ from datetime import datetime
 import itertools
 
 from django.shortcuts import render
-from django.db.models import F, Sum
+from django.db.models import F
+from django.http import JsonResponse
 
 from django_tables2 import RequestConfig
 
@@ -166,9 +167,12 @@ def activity_by_gender(request, gender="all", age=HealthActivity.AGE_ALL, year=N
         },
     }
 
-    return render(request, 'health/activity-by-gender.html', data)
+    if "application/json" in request.META.get('HTTP_ACCEPT'):
+        return JsonResponse([{"key": "Activity", "values": zip(chartdata['x'], chartdata['y1']) }], safe=False)
+    else:
+        return render(request, 'health/activity-by-gender.html', data)
 
-def fruitveg_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None):
+def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None):
 
     if gender == "male":
         gender = HealthFruitVeg.MALE
@@ -249,7 +253,10 @@ def fruitveg_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=N
         },
     }
 
-    return render(request, 'health/fruitveg-by-gender.html', data)
+    if "application/json" in request.META.get('HTTP_ACCEPT'):
+        return JsonResponse([{"key": "Diet", "values": zip(chartdata['x'], chartdata['y1']) }], safe=False)
+    else:
+        return render(request, 'health/diet-by-gender.html', data)
 
 def health_by_gender(request, gender="all", year=None):
 

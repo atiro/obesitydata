@@ -13,13 +13,24 @@ from diagnosis.models import AdmissionsByGender, AdmissionsByAge, SurgeryByGende
 from diagnosis.tables import SurgeryByGenderTable, AdmissionsByAgeTable, AdmissionsByGenderTable
 
 
-def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMARY):
+def admissions_by_gender(request, year=None, gender=None, diagnosis=AdmissionsByGender.PRIMARY):
 
     if year is not None:
         admissions = AdmissionsByGender.objects.all().filter(year=year).filter(diagnosis=diagnosis)
-
     else:
         admissions = AdmissionsByGender.objects.all().filter(diagnosis=diagnosis)
+
+    if gender is not None:
+        admissions = admissions.filter(gender=gender)
+
+    if 'application/json' in request.META.get('HTTP_ACCEPT'):
+        chartdata = {
+            'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
+            'gender': gender,
+            'y1': list(admissions.values_list('admissions', flat=True).order_by('year')),
+            'summary': "In 2014, %s  %s patients received a primary diagnosis of obesity." % ( '1000', 'Men'),
+        }
+        return JsonResponse([{'key': chartdata['gender'], 'values': zip(chartdata['x'], chartdata['y1']), 'summary': chartdata['summary']}], safe=False)
 
     chartdata = {
         'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
@@ -63,19 +74,17 @@ def admissions_by_gender(request, year=None, diagnosis=AdmissionsByGender.PRIMAR
         }
     }
 
-#    if 'application/json' in request.META.get('accept'):
-    return JsonResponse([{ 'key': 'Male', 'values': zip(chartdata['x'], chartdata['y1']) }], safe=False)
-#    return (json.dumps(chartdata, skipkeys=True), content_type='application/json')
-#    else:
-#       return render(request, 'diagnosis/admissions-by-gender.html', data)
+    return render(request, 'diagnosis/admissions-by-gender.html', data)
 
 # Create your views here.
 
 
-def admissions_by_age(request, year=None, diagnosis=AdmissionsByAge.PRIMARY):
+def admissions_by_age(request, year=None, gender=None, age=None, diagnosis=AdmissionsByAge.PRIMARY):
+
+    admissions = AdmissionsByAge.objects.all().filter(diagnosis=diagnosis)
 
     if year is not None:
-        admissions = AdmissionsByAge.objects.all().filter(year=year).filter(diagnosis=diagnosis)
+        admissions = admissions.objects.filter(year=year)
 
         chartdata = {
             'x': ['Under 16', '16-24', '25-34', '35-44', '45-54', '55-64', '65-74', '75+', 'Unknown'],
@@ -99,28 +108,53 @@ def admissions_by_age(request, year=None, diagnosis=AdmissionsByAge.PRIMARY):
         }
 
     else:
-        admissions = AdmissionsByAge.objects.all().filter(diagnosis=diagnosis)
+
+        if 'application/json' in request.META.get('HTTP_ACCEPT'):
+            chartdata = {
+                'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
+                'summary': "In 2014, %s  patients aged %s received a primary diagnosis of obesity." % ('100', age),
+                }
+
+            chartdata['age'] = age
+            if age == "0-16":
+                chartdata['y'] = list(admissions.values_list('age_under_16', flat=True).order_by('year'))
+            elif age == "16-24":
+                chartdata['y'] = list(admissions.values_list('age_16_to_24', flat=True).order_by('year'))
+            elif age == "25-34":
+                chartdata['y'] = list(admissions.values_list('age_25_to_34', flat=True).order_by('year'))
+            elif age == "35-44":
+                chartdata['y'] = list(admissions.values_list('age_35_to_44', flat=True).order_by('year'))
+            elif age == "45-54":
+                chartdata['y'] = list(admissions.values_list('age_45_to_54', flat=True).order_by('year'))
+            elif age == "55-64":
+                chartdata['y'] = list(admissions.values_list('age_55_to_64', flat=True).order_by('year'))
+            elif age == "65-74":
+                chartdata['y'] = list(admissions.values_list('age_65_to_74', flat=True).order_by('year'))
+            elif age == "75+":
+                chartdata['y'] = list(admissions.values_list('age_75_and_over', flat=True).order_by('year'))
+
+            return JsonResponse([{'key': chartdata['age'], 'values': zip(chartdata['x'], chartdata['y']), 'summary': chartdata['summary']}], safe=False)
 
         chartdata = {
-            'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')],
+            'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
             'name1': 'Under 16',
-            'y1': admissions.all().values_list('age_under_16', flat=True).order_by('year'),
+            'y1': list(admissions.all().values_list('age_under_16', flat=True).order_by('year')),
             'name2': '16-24',
-            'y2': admissions.all().values_list('age_16_to_24', flat=True).order_by('year'),
+            'y2': list(admissions.all().values_list('age_16_to_24', flat=True).order_by('year')),
             'name3': '25-34',
-            'y3': admissions.all().values_list('age_25_to_34', flat=True).order_by('year'),
+            'y3': list(admissions.all().values_list('age_25_to_34', flat=True).order_by('year')),
             'name4': '35-44',
-            'y4': admissions.all().values_list('age_35_to_44', flat=True).order_by('year'),
+            'y4': list(admissions.all().values_list('age_35_to_44', flat=True).order_by('year')),
             'name5': '45-54',
-            'y5': admissions.all().values_list('age_45_to_54', flat=True).order_by('year'),
+            'y5': list(admissions.all().values_list('age_45_to_54', flat=True).order_by('year')),
             'name6': '55-64',
-            'y6': admissions.all().values_list('age_55_to_64', flat=True).order_by('year'),
+            'y6': list(admissions.all().values_list('age_55_to_64', flat=True).order_by('year')),
             'name7': '65-74',
-            'y7': admissions.all().values_list('age_65_to_74', flat=True).order_by('year'),
+            'y7': list(admissions.all().values_list('age_65_to_74', flat=True).order_by('year')),
             'name8': '75+',
-            'y8': admissions.all().values_list('age_75_and_over', flat=True).order_by('year'),
+            'y8': list(admissions.all().values_list('age_75_and_over', flat=True).order_by('year')),
             'name9': 'Unknown',
-            'y9': admissions.all().values_list('age_unknown', flat=True).order_by('year')
+            'y9': list(admissions.all().values_list('age_unknown', flat=True).order_by('year'))
         }
 
         charttype = 'stackedAreaChart'
@@ -156,6 +190,10 @@ def admissions_by_age(request, year=None, diagnosis=AdmissionsByAge.PRIMARY):
         'extra': extra,
         'surgery_table': table
     }
+
+#    return JsonResponse([{'key': 'Admissions By Age',
+#        'values': [{"label": chartdata["name1"], "value": chartdata["y1"]}]
+#        }], safe=False)
 
     return render(request, 'diagnosis/admissions-by-age.html', data)
 
