@@ -28,9 +28,11 @@ def admissions_by_gender(request, year=None, gender=None, diagnosis=AdmissionsBy
             'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
             'gender': gender,
             'y1': list(admissions.values_list('admissions', flat=True).order_by('year')),
-            'summary': "In 2014, %s  %s patients received a primary diagnosis of obesity." % ( '1000', 'Men'),
+
         }
-        return JsonResponse([{'key': chartdata['gender'], 'values': zip(chartdata['x'], chartdata['y1']), 'summary': chartdata['summary']}], safe=False)
+        summary = "In 2013-2014, %s  %s patients received a primary diagnosis of obesity." % ( chartdata["y1"][-1], 'Male' if gender == 'M' else 'Female'),
+
+        return JsonResponse([{'key': chartdata['gender'], 'values': zip(chartdata['x'], chartdata['y1']), 'summary': summary}], safe=False)
 
     chartdata = {
         'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
@@ -112,7 +114,6 @@ def admissions_by_age(request, year=None, gender=None, age=None, diagnosis=Admis
         if 'application/json' in request.META.get('HTTP_ACCEPT'):
             chartdata = {
                 'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),
-                'summary': "In 2014, %s  patients aged %s received a primary diagnosis of obesity." % ('100', age),
                 }
 
             chartdata['age'] = age
@@ -133,7 +134,9 @@ def admissions_by_age(request, year=None, gender=None, age=None, diagnosis=Admis
             elif age == "75+":
                 chartdata['y'] = list(admissions.values_list('age_75_and_over', flat=True).order_by('year'))
 
-            return JsonResponse([{'key': chartdata['age'], 'values': zip(chartdata['x'], chartdata['y']), 'summary': chartdata['summary']}], safe=False)
+            summary = "In 2013-2014, %s diagnosis of obesity were given to those aged %s." % (chartdata['y'][-1], age)
+
+            return JsonResponse([{'key': chartdata['age'], 'values': zip(chartdata['x'], chartdata['y']), 'summary': summary}], safe=False)
 
         chartdata = {
             'x': list([int(datetime(x, 1, 1).strftime('%s'))*1000 for x in admissions.values_list('year', flat=True).distinct().order_by('year')]),

@@ -134,6 +134,9 @@ def activity_by_gender(request, gender="all", age=HealthActivity.AGE_ALL, year=N
         'y3': activity.filter(gender=gender).filter(activity=HealthActivity.ACTIVITY_LOW).values_list('percentage', flat=True).order_by('year')
     }
 
+    if "application/json" in request.META.get('HTTP_ACCEPT'):
+        return JsonResponse([{"key": "Meets", "values": zip(chartdata['x'], chartdata['y1']) }, {"key": "Some", "values": zip(chartdata['x'], chartdata['y2'])}, {"key": "Low", "values": zip(chartdata['x'], chartdata['y3'])}], safe=False)
+
     charttype = 'stackedAreaChart'
     chartcontainer = 'stackedarea_container'
 
@@ -167,12 +170,9 @@ def activity_by_gender(request, gender="all", age=HealthActivity.AGE_ALL, year=N
         },
     }
 
-    if "application/json" in request.META.get('HTTP_ACCEPT'):
-        return JsonResponse([{"key": "Activity", "values": zip(chartdata['x'], chartdata['y1']) }], safe=False)
-    else:
-        return render(request, 'health/activity-by-gender.html', data)
+    return render(request, 'health/activity-by-gender.html', data)
 
-def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None):
+def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None, portions=None):
 
     if gender == "male":
         gender = HealthFruitVeg.MALE
@@ -203,6 +203,7 @@ def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None)
     else:
         fruitveg = HealthFruitVeg.objects.all().filter(age=age)
 
+
     chartdata = {
         'x': [int(datetime(x, 1, 1).strftime('%s'))*1000 for x in fruitveg.values_list('year', flat=True).distinct().order_by('year')],
         'name1': 'None',
@@ -220,6 +221,9 @@ def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None)
         'name7': 'Over 5',
         'y7': fruitveg.filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_MORE_5).values_list('percentage', flat=True).order_by('year')
     }
+
+    if "application/json" in request.META.get('HTTP_ACCEPT'):
+        return JsonResponse([{"key": "None", "values": zip(chartdata['x'], chartdata['y1']) }, {"key": "0-1", "values": zip(chartdata['x'], chartdata['y2']) }, {"key": "1-2", "values": zip(chartdata['x'], chartdata['y3']) }, {"key": "2-3", "values": zip(chartdata['x'], chartdata['y4']) }, {"key": "3-4", "values": zip(chartdata['x'], chartdata['y5']) }, {"key": "4-5", "values": zip(chartdata['x'], chartdata['y6']) }, {"key": "Over 5", "values": zip(chartdata['x'], chartdata['y7'])}], safe=False)
 
     charttype = 'stackedAreaChart'
     chartcontainer = 'stackedarea_container'
@@ -253,10 +257,7 @@ def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None)
         },
     }
 
-    if "application/json" in request.META.get('HTTP_ACCEPT'):
-        return JsonResponse([{"key": "Diet", "values": zip(chartdata['x'], chartdata['y1']) }], safe=False)
-    else:
-        return render(request, 'health/diet-by-gender.html', data)
+    return render(request, 'health/diet-by-gender.html', data)
 
 def health_by_gender(request, gender="all", year=None):
 

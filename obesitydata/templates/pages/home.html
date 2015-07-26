@@ -7,44 +7,7 @@
 <h1>Find My Fit</h1>
 </div>
 
-<div style="float: left;">
-<h3>My Gender</h3>
-<button type="button" class="btn btn-primary">Male</button>
-<button type="button" class="btn btn-success">Female</button>
-
-<h3>My Age</h3>
-<button type="button" class="btn btn-default">0-16</button>
-<button type="button" class="btn btn-primary">16-24</button>
-<button type="button" class="btn btn-success">25-34</button>
-<button type="button" class="btn btn-info">35-44</button>
-<button type="button" class="btn btn-warning">45-54</button>
-<button type="button" class="btn btn-danger">55-64</button>
-
-<h3>My Activity</h3>
-
-You are more active than 43.9% of the UK population.<br/>
-
-<h3>My Alcohol</h3>
-
-<h3>My Diet (Fruit/Veg Portions a day)</h3>
-<button type="button" class="btn btn-default">None</button>
-<button type="button" class="btn btn-primary">0-1</button>
-<button type="button" class="btn btn-success">1-2</button>
-<button type="button" class="btn btn-info">2-3</button>
-<button type="button" class="btn btn-warning">3-4</button>
-<button type="button" class="btn btn-danger">4-5</button>
-<br/>
-You consume 2 portions more fruit & veg than 25.6% of the UK population....
-
-<h3>My Smoking</h3>
-
-	<input id="age" type="text" data-slider-ticks="[0, 50, 100, 150, 200]" data-slider-ticks-snap-bounds="30" data-slider-ticks-labels="['$0', '$100', '$200', '$300', '$400']" ticks_positions="[0, 30, 60, 70, 90, 100]" />
-
-
-<h3>Results</h3>
-
-</div>
-<div style="float: right;">
+<div>
 
 <h3>Health Data</h3>
 <ul>
@@ -71,12 +34,12 @@ You consume 2 portions more fruit & veg than 25.6% of the UK population....
 	<li><a href="{% url 'activity_by_gender' 'female' %}">Activity (All Ages, Female)</a></li>
 </ul>
 
-<h2> Fruit & Veg </h2>
+<h2> Diet </h2>
 
 <ul>
-	<li><a href="{% url 'fruitveg' %}">Fruit & Veg Portions (All Ages, Male & Female)</a></li>
-	<li><a href="{% url 'fruitveg_by_gender' 'male' %}">Fruit & Veg Portions (All Ages, Male)</a></li>
-	<li><a href="{% url 'fruitveg_by_gender' 'female' %}">Fruit & Veg Portions (All Ages, Female)</a></li>
+	<li><a href="{% url 'diet' %}">Fruit & Veg Portions (All Ages, Male & Female)</a></li>
+	<li><a href="{% url 'diet_by_gender' 'male' %}">Fruit & Veg Portions (All Ages, Male)</a></li>
+	<li><a href="{% url 'diet_by_gender' 'female' %}">Fruit & Veg Portions (All Ages, Female)</a></li>
 </ul>
 
 <h2> Health </h2>

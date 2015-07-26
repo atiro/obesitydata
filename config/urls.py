@@ -8,9 +8,10 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
-    url(r'^fitfinder$', TemplateView.as_view(template_name='pages/fitfinder.html'), name="fitfinder"),
+    url(r'^graphs$', TemplateView.as_view(template_name='pages/home.html'), name="graphs"),
+    url(r'^$', TemplateView.as_view(template_name='pages/fitfinder.html'), name="home"),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
+    url(r'^sources/$', TemplateView.as_view(template_name='pages/sources.html'), name="sources"),
 
     # Django Admin
     url(r'^admin/', include(admin.site.urls)),
