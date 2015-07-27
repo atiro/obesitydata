@@ -231,11 +231,17 @@ def diet_by_gender(request, gender="all", age=HealthFruitVeg.AGE_ALL, year=None,
     table_fruitveg = {}
     fruitveg_none = fruitveg.values('year').annotate(fruitveg_none=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_NONE)
     fruitveg_less_1 = fruitveg.values('year').annotate(fruitveg_less_1=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_1)
+    fruitveg_less_2 = fruitveg.values('year').annotate(fruitveg_less_2=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_2)
+    fruitveg_less_3 = fruitveg.values('year').annotate(fruitveg_less_3=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_3)
+    fruitveg_less_4 = fruitveg.values('year').annotate(fruitveg_less_4=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_4)
+    fruitveg_less_5 = fruitveg.values('year').annotate(fruitveg_less_5=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_LESS_5)
+    fruitveg_more_5 = fruitveg.values('year').annotate(fruitveg_more_5=F('percentage')).filter(gender=gender).filter(fruitveg=HealthFruitVeg.FRUITVEG_MORE_5)
+
 #    female_admissions = admissions.values('year').annotate(female_admissions=F('admissions')).filter(gender='F')
 #    unknown_admissions = admissions.values('year').annotate(unknown_admissions=F('admissions')).filter(gender='U')
 #    total_admissions = admissions.values('year').annotate(total_admissions=Sum('admissions'))
 
-    for sur in itertools.chain(fruitveg_none, fruitveg_less_1):
+    for sur in itertools.chain(fruitveg_none, fruitveg_less_1, fruitveg_less_2, fruitveg_less_3, fruitveg_less_4, fruitveg_less_5, fruitveg_more_5):
         if sur['year'] in table_fruitveg:
             table_fruitveg[sur['year']].update(sur)
         else:
