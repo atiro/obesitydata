@@ -46,6 +46,12 @@ $(document).ready(function() {
 				.showLegend(false)
 				.clipEdge(true);
 
+			if(gender == 'M') {
+				chart.color(['#2196f3'])
+			} else {
+				chart.color(['#5cb85c'])
+			}
+
 			chart.xAxis.tickFormat(function(d) {
 				return d3.time.format('%Y')(new Date(d))
 			});
@@ -91,6 +97,24 @@ $('body').on('click', '#age button', function() {
 				.showLegend(false)
 				.clipEdge(true);
 
+			if(age == '0-16') {
+				chart.color(['#000000'])
+			} else if(age == '16-24') {
+					chart.color(['#337ab7'])
+			} else if(age == '25-34') {
+				chart.color(['#5cb85c'])
+			} else if(age == '35-44') {
+				chart.color(['#862197']) 
+			} else if(age == '45-54') {
+				chart.color(['#f0ad4e']) 
+			} else if(age == '55-64') {
+				chart.color(['#d9534f']) 
+			} else if(age == '65-74') {
+				chart.color(['#d9534f']) 
+			} else if(age == '75+') {
+				chart.color(['#d9534f']) 
+			}
+
 			chart.xAxis.tickFormat(function(d) {
 				return d3.time.format('%Y')(new Date(d))
 			});
@@ -118,6 +142,8 @@ $('body').on('click', '#activity button', function() {
 	$('.activity button').removeClass('active');
 	$(this).toggleClass('active');
 
+	var activity = $('.activity button.active').val();
+
 	var json_url = "/health/activity/";
 
 	if(gender == 'M') {
@@ -134,6 +160,7 @@ $('body').on('click', '#activity button', function() {
 				.x(function(d) { return d[0] })
 				.y(function(d) { return d[1] })
 				.showControls(false)
+				.color(['#000000', '#2196f3', '#5cb85c'])
 				.clipEdge(true);
 
 			chart.xAxis.tickFormat(function(d) {
@@ -177,6 +204,7 @@ $('body').on('click', '#diet button', function() {
 				.x(function(d) { return d[0] })
 				.y(function(d) { return d[1] })
 				.showControls(false)
+				.color(['#000000', '#2196f3', '#5cb85c', '#862197', '#f0ad4e', '#d9534f', '#d9534f'])
 				.clipEdge(true);
 
 			chart.xAxis.tickFormat(function(d) {

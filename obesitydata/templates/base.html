@@ -36,9 +36,13 @@
 
     <div class="header navbar">
       <div class="container">
+		  {% block brandtitle %}
         <a class="navbar-brand" href="/">Find My Fit</a>
+		  {% endblock %}
+		  {% block brandsubtitle %} {% endblock %}
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="{% url 'graphs' %}">All Graphs</a></li>
+          <li><a href="{% url 'fitfinder' %}">Find My Fit</a></li>
+          <li><a href="{% url 'graphs' %}">Graphs</a></li>
           <li><a href="{% url 'sources' %}">Sources</a></li>
           <li><a href="{% url 'about' %}">About</a></li>
         </ul>
