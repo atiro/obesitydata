@@ -9,7 +9,8 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     url(r'^graphs$', TemplateView.as_view(template_name='pages/home.html'), name="graphs"),
-    url(r'^$', TemplateView.as_view(template_name='pages/fitfinder.html'), name="home"),
+    url(r'^$', TemplateView.as_view(template_name='pages/intro.html'), name="home"),
+    url(r'^$', TemplateView.as_view(template_name='pages/fitfinder.html'), name="fitfinder"),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
     url(r'^sources/$', TemplateView.as_view(template_name='pages/sources.html'), name="sources"),
 
