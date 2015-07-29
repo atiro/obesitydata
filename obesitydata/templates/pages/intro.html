@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load nvd3_tags %}
+
+{% block css %}
+{{ block.super  }}
+
+<link media="all" href="{% static 'nvd3/build/nv.d3.css' %}" type="text/css" rel="stylesheet" />
+
+{% endblock %}
+
+{% block javascript %}
+
+{{ block.super }}
+
+<script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
+<script type="text/javascript" src='{% static 'nvd3/build/nv.d3.min.js' %}'></script>
+
+<script type="text/javascript">
+
+var gender;
+var age;
+var activity;
+var diet;
+var postcode;
+
+$(document).ready(function() {
+	$('body').on('click', '#gender button', function() {
+		$('.gender button').removeClass('active');
+		$(this).toggleClass('active');
+
+	// Load graph with URL based on buttons
+
+	gender = $('.gender button.active').val();
+
+	var json_url = '/diagnosis/admissions/gender/primary/' + gender;
+
+	d3.json(json_url, function(data) {
+		nv.addGraph(function() {
+			var chart = nv.models.stackedAreaChart()
+				.x(function(d) { return d[0] })
+				.y(function(d) { return d[1] })
+				.showControls(false)
+				.showLegend(false)
+				.clipEdge(true);
+
+			if(gender == 'M') {
+				chart.color(['#2196f3'])
+			} else {
+				chart.color(['#5cb85c'])
+			}
+
+			chart.xAxis.tickFormat(function(d) {
+				return d3.time.format('%Y')(new Date(d))
+			});
+
+			chart.yAxis.tickFormat(function(d) {
+				return d3.format(',.0d');
+			});
+
+			// Chart setup TODO
+
+			d3.select('#c-gender svg')
+				.datum(data)
+				.call(chart);
+
+			$('#s-gender').text(data[0].summary)
+
+			nv.utils.windowResize(chart.update);
+
+			return chart;
+		});
+	});
+
+	$('#g-gender').removeClass('hide')
+	$('#i-gender').removeClass('hide')
+	$('#q-age').removeClass('hide')
+
+	});
+
+$('body').on('click', '#age button', function() {
+	$('.age button').removeClass('active');
+	$(this).toggleClass('active');
+
+	age = $('.age button.active').val();
+
+	var json_url = '/diagnosis/admissions/age/primary/' + age;
+
+	d3.json(json_url, function(data) {
+		nv.addGraph(function() {
+			var chart = nv.models.stackedAreaChart()
+				.x(function(d) { return d[0] })
+				.y(function(d) { return d[1] })
+				.showControls(false)
+				.showLegend(false)
+				.clipEdge(true);
+
+			if(age == '0-16') {
+				chart.color(['#000000'])
+			} else if(age == '16-24') {
+					chart.color(['#337ab7'])
+			} else if(age == '25-34') {
+				chart.color(['#5cb85c'])
+			} else if(age == '35-44') {
+				chart.color(['#862197']) 
+			} else if(age == '45-54') {
+				chart.color(['#f0ad4e']) 
+			} else if(age == '55-64') {
+				chart.color(['#d9534f']) 
+			} else if(age == '65-74') {
+				chart.color(['#d9534f']) 
+			} else if(age == '75+') {
+				chart.color(['#d9534f']) 
+			}
+
+			chart.xAxis.tickFormat(function(d) {
+				return d3.time.format('%Y')(new Date(d))
+			});
+
+			// Chart setup TODO
+
+			d3.select('#c-age svg')
+				.datum(data)
+				.call(chart);
+
+			$('#s-age').text(data[0].summary)
+
+			nv.utils.windowResize(chart.update);
+
+			return chart;
+		});
+	});
+
+	$('#g-age').removeClass('hide')
+	$('#i-age').removeClass('hide')
+	$('#q-activity').removeClass('hide')
+	});
+
+$('body').on('click', '#activity button', function() {
+	$('.activity button').removeClass('active');
+	$(this).toggleClass('active');
+
+	var activity = $('.activity button.active').val();
+
+	var json_url = "/health/activity/";
+
+	if(gender == 'M') {
+		json_url += "male/"
+	} else {
+		json_url += "female/"
+	}
+	
+	json_url += age;
+	
+	d3.json(json_url, function(data) {
+		nv.addGraph(function() {
+			var chart = nv.models.stackedAreaChart()
+				.x(function(d) { return d[0] })
+				.y(function(d) { return d[1] })
+				.showControls(false)
+				.color(['#000000', '#2196f3', '#5cb85c'])
+				.clipEdge(true);
+
+			chart.xAxis.tickFormat(function(d) {
+				return d3.time.format('%Y')(new Date(d))
+			});
+
+			// Chart setup TODO
+
+			d3.select('#c-activity svg')
+				.datum(data)
+				.call(chart);
+
+			nv.utils.windowResize(chart.update);
+
+			return chart;
+		});
+	});
+
+	$('#g-activity').removeClass('hide')
+	$('#i-activity').removeClass('hide')
+	$('#q-diet').removeClass('hide')
+	});
+
+$('body').on('click', '#diet button', function() {
+	$('.diet button').removeClass('active');
+	$(this).toggleClass('active');
+
+	var json_url = "/health/diet/";
+
+	if(gender == 'M') {
+		json_url += "male/"
+	} else {
+		json_url += "female/"
+	}
+	
+	json_url += age;
+	
+	d3.json(json_url, function(data) {
+		nv.addGraph(function() {
+			var chart = nv.models.stackedAreaChart()
+				.x(function(d) { return d[0] })
+				.y(function(d) { return d[1] })
+				.showControls(false)
+				.color(['#000000', '#2196f3', '#5cb85c', '#862197', '#f0ad4e', '#d9534f', '#d9534f'])
+				.clipEdge(true);
+
+			chart.xAxis.tickFormat(function(d) {
+				return d3.time.format('%Y')(new Date(d))
+			});
+
+			// Chart setup TODO
+
+			d3.select('#c-diet svg')
+				.datum(data)
+				.call(chart);
+
+			nv.utils.windowResize(chart.update);
+
+			return chart;
+		});
+	});
+
+	$('#g-diet').removeClass('hide')
+	$('#i-diet').removeClass('hide')
+	$('#q-green').removeClass('hide')
+	});
+
+	$('body').on('click', '#results', function() {
+		$('#results').removeClass('hide')
+		$('#questions').addClass('hide')
+	});
+});
+
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="col-md-3">
+	<div id="g-gender" class="hide">
+		<span class="center-block" style="font-weight: bold; text-align: center;">Obesity By Gender</span>
+		<div id="c-gender">
+			    <svg style="height: 200px;"></svg>
+		</div>
+		<div id="i-gender">
+		<span id="s-gender"></span>
+		<span>Explore in more <a href="/diagnosis/admissions/gender/primary">detail</a></span>
+		</div>
+	</div>
+	<div id="g-activity" class="hide" style="padding-top: 75px;">
+		<span class="center-block" style="font-weight: bold; text-align: center;">Physical Activity</span>
+		<div id="c-activity">
+			    <svg style="height: 200px;"></svg>
+		</div>
+		<span>Explore in more <a href="/health/activity">detail</a></span>
+	</div>
+</div>
+
+<div class="col-md-6">
+	<div id="results" class="hide">
+		You consume more fruit & veg than X % of your gender / age group.<br/>
+		You take part in more physical activity than X % of your gender / age group.<br/>
+		You have more green space to be active in than X % of the country.<br/>
+
+	</div>
+	<div id="questions">
+
+	<div id="q-gender" class="center-block" style="text-align: center; padding-bottom: 20px;">
+	<h4>Your Gender</h4>
+<div class="btn-group gender" role="group" id="gender" data-toggle="buttons-radio">
+<button id="a-male" type="button" class="btn btn-primary" value="M">Male</button>
+<button id="a-female" type="button" class="btn btn-success" value="F">Female</button>
+</div>
+
+	</div>
+
+	<div id="q-age" class="hide center-block" style="text-align: center; padding-bottom: 20px;">
+	<h4>Your Age</h4>
+<div class="btn-group age" role="group" id="age">
+<button type="button" class="btn btn-default" value="0-16">0-16</button>
+<button type="button" class="btn btn-primary" value="16-24">16-24</button>
+<button type="button" class="btn btn-success" value="25-34">25-34</button>
+<button type="button" class="btn btn-info" value="35-44">35-44</button>
+<button type="button" class="btn btn-warning" value="45-54">45-54</button>
+<button type="button" class="btn btn-danger" value="55-64">55-64</button>
+<button type="button" class="btn btn-danger" value="65-74">65-74</button>
+<button type="button" class="btn btn-danger" value="75+">Over 75</button>
+	</div>
+	</div>
+
+	<div id="q-activity" class="hide center-block" style="text-align: center; padding-bottom: 20px;">
+	<h4>Your Physical Activity</h4>
+<div class="btn-group activity" role="group" id="activity">
+<button type="button" class="btn btn-default">Low Activity</button>
+<button type="button" class="btn btn-primary">Some Activity</button>
+<button type="button" class="btn btn-success">Meets</button>
+</div>
+	</div>
+
+
+	<div id="q-diet" class="hide center-block" style="text-align: center; padding-bottom: 20px;">
+		<h4>Your Diet</h4>
+		<h5>(Fruit/Veg Portions a day)</h5>
+<div class="btn-group diet" role="group" id="diet">
+<button type="button" class="btn btn-default">None</button>
+<button type="button" class="btn btn-primary">0-1</button>
+<button type="button" class="btn btn-success">1-2</button>
+<button type="button" class="btn btn-info">2-3</button>
+<button type="button" class="btn btn-warning">3-4</button>
+<button type="button" class="btn btn-danger">4-5</button>
+<button type="button" class="btn btn-danger">5+</button>
+	</div>
+	</div>
+
+	<div id="q-green" class="hide center-block" style="text-align: center; padding-bottom: 20px;">
+<h4>Green Space [todo]</h4>
+<form>
+	<div class="form-group center-block">
+		<input type="text" class="form-control" id="postcode" placeholder="Your Postcode" style="width: 25%"></input>
+		Optional. No personal data is stored.<br/><br/>
+		<button type="submit" class="btn btn-default" id="results">Find Your Fit</button>
+	</div>
+</form>
+	</div>
+
+</div>
+</div>
+
+<div class="col-md-3">
+	<div id="g-age" class="hide" style="padding-top: 100px;">
+		<span class="center-block" style="font-weight: bold; text-align: center;">Obesity By Age</span>
+		<div id="c-age">
+			    <svg style="height: 200px;"></svg>
+		</div>
+	</div>
+	<div id="i-age" class="hide center-block">
+		<span id="s-age"></span>
+		<span class="center-block">Explore in more <a href="/diagnosis/admissions/age/primary">detail</a></span>
+</div>
+	<div id="g-diet" class="hide" style="padding-top: 100px;">
+		<span class="center-block" style="font-weight: bold; text-align: center;">Diet</span>
+		<div id="c-diet">
+			    <svg style="height: 200px;"></svg>
+		</div>
+	</div>
+	<div id="i-diet" class="hide center-block">
+		<span id="s-diet"></span>
+		<span class="center-block">Explore in more <a href="/health/diet">detail</a></span>
+	</div>
+</div>
+
+{% endblock %}
